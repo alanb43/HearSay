@@ -1,21 +1,32 @@
+from dataclasses import dataclass
 from time import sleep
 import speech_recognition as sr
+import pyttsx3
 
-class AudioManager:
+@dataclass
+class Response:
+    success: bool = True
+    error: str = None
+    content: str = None
+
+class SpeechManager:
     """Turns utterances into text and text into speech."""
     def __init__(self):
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
 
-    def mic_to_text(self):
+    def speech_to_text(self):
         """Turns spoken utterances from device's main mic into text."""
         audio_data = self._get_microphone_input()
         response = self._recognize_audio_content(audio_data)
-        # still need to build digestible representation of audio content
-        # from response data
+        print(response)
+        return response.content if response.success else response.error
 
-    def text_to_audio(self):
+    def text_to_speech(self, text: str):
         """Reads text as auditory output."""
+        engine = pyttsx3.init()
+        engine.say(text)
+        engine.runAndWait()
 
     def _get_microphone_input(self):
         """
@@ -25,10 +36,10 @@ class AudioManager:
         with self.microphone as audio_input:
             self.recognizer.adjust_for_ambient_noise(audio_input)
             sleep(0.5)
-            print("begin talking!")
-            audio_data = self.recognizer.listen(audio_input)
+            print("Begin talking!")
+            audio_data = self.recognizer.listen(source=audio_input)
             return audio_data
-
+    
     def _recognize_audio_content(self, audio):
         """
         Transcribes audio input data to find content of utterance.
@@ -39,32 +50,26 @@ class AudioManager:
             attributes:
                 - "success": bool, whether content was transcribed
                 - "error": str, an error message populated when error occurs
-                - "transcription": 
+                - "transcription": str, the transcribed content from input
         """
-        response = {
-            "success": True,
-            "error": None,
-            "transcription": None
-        }
-
+        response = Response()
         try:
             # Change to google cloud speech, need to create account to do so.
-            response["transcription"] = self.recognizer.recognize_google(audio)
+            response.content = self.recognizer.recognize_google(audio)
 
         except sr.UnknownValueError:
             # The audio input wasn't parsable by the recognizable. Jibberish.
-            response["success"] = False
-            response["error"] = "I wasn't able to understand that, please try again."
+            response.success = False
+            response.error = "I wasn't able to understand that, please try again."
 
         except sr.RequestError:
             # Google Cloud Speech API was unreachable or unresponsive
-            response["success"] = False
-            response["error"] = "API unavailable"
+            response.success = False
+            response.error = "API unavailable, try again later."
 
         except Exception:
             # Unknown exception occurred
-            response["success"] = False
-            response["error"] = "Unknown exception occurred"
+            response.success = False
+            response.error = "Unknown error occurred, please try again."
 
         return response
-

@@ -6,3 +6,4 @@ google-cloud-speech
 pyaudio
 # m1 mac solution for install issues for pyaudio:
 # https://stackoverflow.com/a/73166852
+pyttsx3 # text to speech
