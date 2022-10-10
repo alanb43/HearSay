@@ -1,0 +1,15 @@
+{
+    "trade": 
+    [
+        "How much money is [player] worth?",
+        "Is [player] staying at [team]?"
+    ],
+    "injury": 
+    [
+        "Is [player] injured?"
+    ],
+    "overview": 
+    [
+        "What is [player]'s net worth?"
+    ]
+}
