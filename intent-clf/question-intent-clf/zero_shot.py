@@ -2,7 +2,7 @@
 
 from transformers import pipeline
 
-clf = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
+clf = pipeline('zero-shot-classification', model='facebook/bart-large-mnli', multi_label=True)
 
 labels = ['sports player trade', 'sports player injury', 'sports player biography']
 
