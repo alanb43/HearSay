@@ -5,8 +5,11 @@ import json
 
 # TWITTER API - READ FIRST
 
-# Here's a good place to play with the api so we can figure out what calls to make
+# Here's a good place to play with the api so we can figure out what calls to make:
 # https://oauth-playground.glitch.me/?id=tweetsRecentSearch&params=%28%27query%21%27from%3A+FabrizioRomano%27%29_
+
+# This is the Github for the entire API with samples:
+# https://github.com/twitterdev/Twitter-API-v2-sample-code
 
 # Need HearSay Twitter Developer Project Keys to authenticate, keys not getting committed to Github so ask Josh for keys
 
