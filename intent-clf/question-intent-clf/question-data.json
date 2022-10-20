@@ -6,8 +6,10 @@
         "What [team]s are interested in aquiring [player]?",
         "How likely is [player] going to switch to a different team?", 
         "How many times has [player] requested a trade in their career?",
-        "How many times has [player] been traded in their career?"
-        
+        "How many times has [player] been traded in their career?",
+        "Is [player] headed to [team]?",
+        "Is [player] leaving [team]?",
+        "Where is [player] being traded to?"
     ],
     "injury": 
     [
@@ -16,18 +18,9 @@
         "How long will [player] not perform?",
         "Can [player] still perform with injury?",
         "Is [player]'s recovery quiker than expected?",
-        "Is [player]'s recovery longer than expected?"
-    ],
-    "overview": 
-    [
-        "What is [player]'s net worth?",
-        "What sport does [player] do?",
-        "Has [player] won a championship?",
-        "Has [player] gone to the Olympics?",
-        "How old is [player]?",
-        "When did [player] begin their professional career?",
-        "How many championships has [player] won?"
-        
-        
+        "Is [player]'s recovery longer than expected?",
+        "How many times was [player] injured?",
+        "When will [player] recover?",
+        "Is [player] hurt?"
     ]
 }
