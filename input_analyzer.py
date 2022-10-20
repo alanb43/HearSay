@@ -6,7 +6,7 @@ To use, it's required that you:
 
 from transformers import pipeline
 
-MODEL_DIR = './trained_model'
+MODEL_DIR = 'entity_extraction/trained_model/'
 
 class InputAnalyzer:
     """Extracts entities and intents from strings representing spoken utterances."""
