@@ -2,8 +2,7 @@ import snscrape.modules.twitter as twitter
 import pandas as pd
 
 author = "FabrizioRomano"
-topic = "Cristiano Ronaldo"
-include_replies = False
+topic = "Sancho"
 num_tweets = 100
 
 query = f"""(from:{author}) {topic} -filter:replies -filter:retweets"""
