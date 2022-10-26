@@ -1,97 +1,92 @@
 [
     {
         "text": "How much money is [player] worth?",
-        "label": 2,
+        "label": 1,
         "idx": 0
     },
     {
         "text": "Is [player] staying at [team]?",
-        "label": 2,
+        "label": 1,
         "idx": 1
     },
     {
         "text": "What [team]s are interested in aquiring [player]?",
-        "label": 2,
+        "label": 1,
         "idx": 2
     },
     {
         "text": "How likely is [player] going to switch to a different team?",
-        "label": 2,
+        "label": 1,
         "idx": 3
     },
     {
         "text": "How many times has [player] requested a trade in their career?",
-        "label": 2,
+        "label": 1,
         "idx": 4
     },
     {
         "text": "How many times has [player] been traded in their career?",
-        "label": 2,
+        "label": 1,
         "idx": 5
     },
     {
-        "text": "Is [player] injured?",
+        "text": "Is [player] headed to [team]?",
         "label": 1,
         "idx": 6
     },
     {
-        "text": "What is the serverity of [player]'s injury?",
+        "text": "Is [player] leaving [team]?",
         "label": 1,
         "idx": 7
     },
     {
-        "text": "How long will [player] not perform?",
+        "text": "Where is [player] being traded to?",
         "label": 1,
         "idx": 8
     },
     {
-        "text": "Can [player] still perform with injury?",
-        "label": 1,
+        "text": "Is [player] injured?",
+        "label": 0,
         "idx": 9
     },
     {
-        "text": "Is [player]'s recovery quiker than expected?",
-        "label": 1,
+        "text": "What is the serverity of [player]'s injury?",
+        "label": 0,
         "idx": 10
     },
     {
-        "text": "Is [player]'s recovery longer than expected?",
-        "label": 1,
+        "text": "How long will [player] not perform?",
+        "label": 0,
         "idx": 11
     },
     {
-        "text": "What is [player]'s net worth?",
+        "text": "Can [player] still perform with injury?",
         "label": 0,
         "idx": 12
     },
     {
-        "text": "What sport does [player] do?",
+        "text": "Is [player]'s recovery quiker than expected?",
         "label": 0,
         "idx": 13
     },
     {
-        "text": "Has [player] won a championship?",
+        "text": "Is [player]'s recovery longer than expected?",
         "label": 0,
         "idx": 14
     },
     {
-        "text": "Has [player] gone to the Olympics?",
+        "text": "How many times was [player] injured?",
         "label": 0,
         "idx": 15
     },
     {
-        "text": "How old is [player]?",
+        "text": "When will [player] recover?",
         "label": 0,
         "idx": 16
     },
     {
-        "text": "When did [player] begin their professional career?",
+        "text": "Is [player] hurt?",
         "label": 0,
         "idx": 17
-    },
-    {
-        "text": "How many championships has [player] won?",
-        "label": 0,
-        "idx": 18
     }
 ]
