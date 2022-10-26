@@ -5,7 +5,7 @@ To use, it's required that you:
 """
 
 from intent_classifier import IntentClassifier
-# from transformers import pipeline
+from transformers import pipeline
 
 MODEL_DIR = 'entity_extraction/trained_model/'
 
@@ -20,7 +20,7 @@ class InputAnalyzer:
             aggregation_strategy="simple"
         )
 
-        self.intent_classifier = IntentClassifier()
+        self.intent_classifier = IntentClassifier(["trade", "injury"])
         
     
     def analyze(self, subject: str):
@@ -48,7 +48,7 @@ class InputAnalyzer:
             - PER: person
             - TEAM: team or organization
         """
-        entity_dict = self.pipeline(subject)
+        entity_dict = self.ner_pipeline(subject)
         # maybe process the dict here to avoid passing along unneccessary info?
         return entity_dict
     
