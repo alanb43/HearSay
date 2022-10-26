@@ -28,7 +28,7 @@ class InputAnalyzer:
             "other": None # other information if we can extract it (adjectives, pronouns, etc)
         }
         
-        # entities = self._extract_entities(subject)
+        analysis['entities'] = self._extract_entities(subject)
         # intents = self._extract_intents(subject)
         
         # process_entities(entities) #  get them in a suitable form for easy integration with
