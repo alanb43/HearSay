@@ -4,7 +4,8 @@ To use, it's required that you:
 2. Have pulled the model 'trained_model' down from remote using git lfs
 """
 
-from transformers import pipeline
+from intent_classifier import IntentClassifier
+# from transformers import pipeline
 
 MODEL_DIR = 'entity_extraction/trained_model/'
 
@@ -12,12 +13,15 @@ class InputAnalyzer:
     """Extracts entities and intents from strings representing spoken utterances."""
 
     def __init__(self):
-        self.pipeline = pipeline(
+        self.ner_pipeline = pipeline(
             task='ner',
             model=MODEL_DIR,
             tokenizer=MODEL_DIR,
             aggregation_strategy="simple"
         )
+
+        self.intent_classifier = IntentClassifier()
+        
     
     def analyze(self, subject: str):
         """Analyzes input to determine/find intents and entities."""
@@ -29,7 +33,7 @@ class InputAnalyzer:
         }
         
         analysis['entities'] = self._extract_entities(subject)
-        # intents = self._extract_intents(subject)
+        analysis['intents'] = self.intent_classifier.classify_intent(subject)
         
         # process_entities(entities) #  get them in a suitable form for easy integration with
         # process_intents(intents)   #  twitter API / our system that handles twitter API?
