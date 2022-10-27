@@ -4,7 +4,7 @@ import pandas as pd
 class TweetSnagger:
     """Snags sports tweets from Twitter."""
 
-    def snag_tweets(self, topics, authors = [], num_tweets = 5, replies = False, retweets = False):
+    def snag_tweets(self, topics, authors = [], num_tweets = 5, replies = False, retweets = False, min_likes = 0):
         """
         Returns relevant tweets regarding input parameters. 
         Tweet format:
@@ -16,12 +16,12 @@ class TweetSnagger:
         """
         query = self._make_query(topics, authors, replies, retweets)
         tweets = []
-
         for tweet in twitter.TwitterSearchScraper(query).get_items():
+            
             if len(tweets) == num_tweets:
                 break
 
-            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet.content):
+            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet.content) and tweet.likeCount >= min_likes:
                 tweets.append({
                     'url': tweet.url,
                     'user': tweet.user.username, 
@@ -32,10 +32,10 @@ class TweetSnagger:
     
     def _verify_relevance(self, topics, content):
         for topic in topics:
-            if topic in content:
-                return True
+            if topic not in content:
+                return False
 
-        return False
+        return True
 
     def _verify_source(self, source):
         """Returns whether source of tweet was human or not (99% confidence)."""
@@ -52,7 +52,7 @@ class TweetSnagger:
 
         topic_q = ''
         for topic in topics:
-            topic_q += f'{topic} OR '
+            topic_q += f'{topic} AND '
         
         topic_q = '(' + topic_q[:-3] + ') '
 
