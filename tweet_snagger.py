@@ -16,12 +16,13 @@ class TweetSnagger:
         """
         query = self._make_query(topics, authors, replies, retweets)
         tweets = []
+        print ("Making Twitter query for:", query)
         for tweet in twitter.TwitterSearchScraper(query).get_items():
             
             if len(tweets) == num_tweets:
                 break
 
-            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet.content) and tweet.likeCount >= min_likes:
+            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet) and tweet.likeCount >= min_likes:
                 tweets.append({
                     'url': tweet.url,
                     'user': tweet.user.username, 
@@ -30,12 +31,14 @@ class TweetSnagger:
         
         return tweets
     
-    def _verify_relevance(self, topics, content):
+    def _verify_relevance(self, topics, tweet):
+        content = tweet.content
+        if tweet.lang != 'en':
+            return False
         for topic in topics:
-            if topic not in content:
-                return False
-
-        return True
+            if topic in content:
+                return True
+        return False
 
     def _verify_source(self, source):
         """Returns whether source of tweet was human or not (99% confidence)."""
@@ -52,9 +55,9 @@ class TweetSnagger:
 
         topic_q = ''
         for topic in topics:
-            topic_q += f'{topic} AND '
+            topic_q += f'{topic} OR '
         
-        topic_q = '(' + topic_q[:-3] + ') '
+        topic_q = '(' + topic_q[:-4] + ') '
 
         query = author_q + topic_q
 
