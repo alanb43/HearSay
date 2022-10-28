@@ -42,7 +42,7 @@ h3 {
   height: 50px;
   margin: 0 auto;
   border-radius: 5px;
-  color: rgb(151, 151, 151);
+  color: rgb(230, 230, 230);
   font-size: 18px;
   padding: 0px 0px 0px 15px;
   box-shadow:  24px 24px 48px #161616,
@@ -85,6 +85,35 @@ h3 {
   height: 35px;
   width: 35px;
   padding-top: 7.5px;
+}
+
+#submit-button {
+  height: 50px;
+  width: 120px;
+  color: #2C2C2C;
+  background-color: rgb(224, 224, 224);
+  margin-top: 25px;
+  border: none;
+  border-radius: 10px;
+  box-shadow:  17px 17px 46px #121212,
+  -17px -17px 46px #464646;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#submit-button:hover {
+  transition: all 0.25s; 
+  cursor: pointer;
+  background-color: rgb(196, 196, 196);
+  width: 125px;
+  height: 55px;
+  box-shadow:  17px 17px 46px #242424,
+  -17px -17px 46px #464646;
+}
+
+#submit-button:active {
+  background-color: rgb(119, 119, 119);
+
 }
 
 #responseDiv {

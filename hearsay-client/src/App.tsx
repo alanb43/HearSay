@@ -30,15 +30,16 @@ const App: React.FC = () => {
     // call backend - generate response and display on page
     let response = "";
     let endpoint = "";
-    axios.post(endpoint, {
-      query: query
-    })
-    .then(function (response) {
-      setResponse(response.data);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+    // axios.post(endpoint, {
+    //   query: query
+    // })
+    // .then(function (response) {
+    //   setResponse(response.data);
+    // })
+    // .catch(function (error) {
+    //   console.error(error);
+    // });
+    console.log("hi");
   }
 
   let responseDiv = <div></div>
@@ -61,9 +62,11 @@ const App: React.FC = () => {
         value={query} 
         onChange={e => setQuery(e.target.value)}
         onSubmit={onSubmit}/>
-        <div id="mic-button" onClick={onMicClick}><img id="mic-img" src="mic.png" alt="" /></div>
+        <div id="mic-button" onClick={onMicClick}>
+          <img id="mic-img" src="mic.png" alt="" />
+        </div>
       </div>
-      {/* <div id="submit-button">Submit</div> */}
+      <button id="submit-button" onClick={onSubmit}>Submit</button>
       {responseDiv}
     </div>
   );
