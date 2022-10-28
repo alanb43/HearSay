@@ -10,7 +10,6 @@ const App: React.FC = () => {
 
   const onMicClick = () => {
     // call backend - speech_manager.py
-    let speech_to_text = ""
     let endpoint = "";
     axios({
       method: 'get',
@@ -28,17 +27,16 @@ const App: React.FC = () => {
 
   const onSubmit = () => {
     // call backend - generate response and display on page
-    let response = "";
     let endpoint = "";
-    // axios.post(endpoint, {
-    //   query: query
-    // })
-    // .then(function (response) {
-    //   setResponse(response.data);
-    // })
-    // .catch(function (error) {
-    //   console.error(error);
-    // });
+    axios.post(endpoint, {
+      query: query
+    })
+    .then(function (response) {
+      setResponse(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
     console.log("hi");
   }
 
