@@ -98,3 +98,7 @@ h3 {
   min-height: 50px;
   text-align: center;
 }
+
+#response {
+  line-height: 50px;
+}

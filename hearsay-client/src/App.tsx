@@ -44,7 +44,7 @@ const App: React.FC = () => {
   let responseDiv = <div></div>
   if (response !== '') {
     responseDiv = <div id="responseDiv">
-      {response}
+      <p id="response">{response}</p>
     </div>
   }
 
@@ -63,6 +63,7 @@ const App: React.FC = () => {
         onSubmit={onSubmit}/>
         <div id="mic-button" onClick={onMicClick}><img id="mic-img" src="mic.png" alt="" /></div>
       </div>
+      {/* <div id="submit-button">Submit</div> */}
       {responseDiv}
     </div>
   );
