@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
+import axios from 'axios';
+
 
 const App: React.FC = () => {
 
@@ -7,15 +9,35 @@ const App: React.FC = () => {
   const [response, setResponse] = useState('');
 
   const onMicClick = () => {
-    // need to call speech_manager.py
+    // call backend - speech_manager.py
     let speech_to_text = ""
-    setQuery(speech_to_text);
+    let endpoint = "";
+    axios({
+      method: 'get',
+      url: endpoint,
+      responseType: 'stream'
+    })
+    .then(function (response) {
+        setQuery(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   const onSubmit = () => {
     // call backend - generate response and display on page
     let response = "";
-    setResponse(response);
+    let endpoint = "";
+    axios.post(endpoint, {
+      query: query
+    })
+    .then(function (response) {
+      setResponse(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
   }
 
   let responseDiv = <div></div>
