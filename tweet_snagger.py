@@ -37,12 +37,14 @@ class TweetSnagger:
         content = tweet.content
         if tweet.lang != 'en':
             return False
-        if self.intent_classifier.classify_intent(content)['labels'][0] != intent:
+        if self.intent_classifier.classify_intent(content)['labels'][0] != intent or self.intent_classifier.classify_intent(content)['scores'][0] < 0.1:
+            print ("Bad tweet due to intent:", self.intent_classifier.classify_intent(content)['labels'][0], self.intent_classifier.classify_intent(content)['scores'][0])
             return False
         for topic in topics:
-            if topic in content:
-                return True
-        return False
+            if topic.lower() not in content.lower():
+                print ("Bad tweet due to missing topic:", topic)
+                return False
+        return True
 
     def _verify_source(self, source):
         """Returns whether source of tweet was human or not (99% confidence)."""
@@ -54,15 +56,15 @@ class TweetSnagger:
         # sep = 'AND' if everything else 'OR'
         if authors:
             for author in authors:
-                author_q += f'from:{author} OR '
+                author_q += f'from:{author} AND '
 
-            author_q = '(' + author_q[:-3] + ') '
+            author_q = '(' + author_q[:-5] + ') '
 
         topic_q = ''
         for topic in topics:
-            topic_q += f'{topic} OR '
+            topic_q += f'{topic} AND '
         
-        topic_q = '(' + topic_q[:-4] + ') '
+        topic_q = '(' + topic_q[:-5] + ') '
 
         query = author_q + topic_q
 
