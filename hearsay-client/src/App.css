@@ -45,8 +45,8 @@ h3 {
   color: rgb(230, 230, 230);
   font-size: 18px;
   padding: 0px 0px 0px 15px;
-  box-shadow:  24px 24px 48px #161616,
-  -24px -24px 48px #424242;
+  box-shadow:  16px 16px 48px #161616,
+  -16px -16px 48px #424242;
 }
 
 #search-bar:hover {
