@@ -7,6 +7,7 @@ To use, it's required that you:
 from entity_classifier import EntityClassifier
 from intent_classifier import IntentClassifier
 from transformers import pipeline
+from intent import INTENTS
 
 MODEL_DIR = 'entity_extraction/trained_model/'
 
@@ -15,7 +16,7 @@ class InputAnalyzer:
 
     def __init__(self):
         self.__entity_classifier = EntityClassifier()
-        self.__intent_classifier = IntentClassifier(["trade", "injury"])
+        self.__intent_classifier = IntentClassifier(INTENTS)
         
     
     def analyze(self, subject: str):

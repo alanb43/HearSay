@@ -39,13 +39,11 @@ def main():
 
             # TODO: add all entities to topics and customize for intents
             # Deal with known intents
-            if primary_intent == "injury":
-                tweets = tweet_snagger.snag_tweets(topics=entity_words + ["injury"], num_tweets=1)
-            elif primary_intent == "trade":
-                tweets = tweet_snagger.snag_tweets(topics=entity_words + ["trade"], num_tweets=1)
+            if primary_intent != "other":
+                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=1)
             # Deal with unknown intents TODO: Update this, I didn't update with the rest of the file
             else: 
-                tweets = tweet_snagger.snag_tweets(entity_words, num_tweets = 100)
+                tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 100)
                 output = np.zeros(3) # 0 - positive, 1 - neutral, 2 - negative
                 for tweet in tweets:
                     sentiment = sentiment_analyzer.analyze(tweet["content"])

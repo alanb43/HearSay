@@ -1,10 +1,14 @@
 import snscrape.modules.twitter as twitter
-import pandas as pd
+from intent_classifier import IntentClassifier
+from intent import INTENTS
 
 class TweetSnagger:
     """Snags sports tweets from Twitter."""
 
-    def snag_tweets(self, topics, authors = [], num_tweets = 5, replies = False, retweets = False, min_likes = 0):
+    def __init__(self):
+        self.intent_classifier = IntentClassifier(INTENTS)
+
+    def snag_tweets(self, topics, intent, authors = [], num_tweets = 5, replies = False, retweets = False, min_likes = 0):
         """
         Returns relevant tweets regarding input parameters. 
         Tweet format:
@@ -16,13 +20,11 @@ class TweetSnagger:
         """
         query = self._make_query(topics, authors, replies, retweets)
         tweets = []
-        print ("Making Twitter query for:", query)
         for tweet in twitter.TwitterSearchScraper(query).get_items():
-            
             if len(tweets) == num_tweets:
                 break
 
-            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet) and tweet.likeCount >= min_likes:
+            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet, intent) and tweet.likeCount >= min_likes:
                 tweets.append({
                     'url': tweet.url,
                     'user': tweet.user.username, 
@@ -31,9 +33,11 @@ class TweetSnagger:
         
         return tweets
     
-    def _verify_relevance(self, topics, tweet):
+    def _verify_relevance(self, topics, tweet, intent):
         content = tweet.content
         if tweet.lang != 'en':
+            return False
+        if self.intent_classifier.classify_intent(content)['labels'][0] != intent:
             return False
         for topic in topics:
             if topic in content:
@@ -47,6 +51,7 @@ class TweetSnagger:
     def _make_query(self, topics, authors, replies = False, retweets = False):
         """Formats a query string given input."""
         author_q = ''
+        # sep = 'AND' if everything else 'OR'
         if authors:
             for author in authors:
                 author_q += f'from:{author} OR '
