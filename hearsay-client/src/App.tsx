@@ -19,6 +19,7 @@ const App: React.FC = () => {
     })
     .then(function (response) {
         setQuery(response.data);
+        onSubmit();
     })
     .catch((error) => {
       console.error(error);
