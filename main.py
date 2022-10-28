@@ -2,9 +2,12 @@ from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier
-
+from flask import Flask
 import numpy as np
 
+app = Flask(__name__)
+
+@app.route("/endpoint")
 def main():
     """Integrates systems to allow an end-to-end interaction."""
     speech_manager = SpeechManager()
@@ -72,4 +75,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    app.run()

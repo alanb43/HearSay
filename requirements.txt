@@ -10,3 +10,4 @@ pyttsx3 # text to speech
 transformers==2.1.0
 snscrape
 pandas
+flask
