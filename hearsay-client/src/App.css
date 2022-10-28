@@ -36,23 +36,25 @@ h3 {
 }
 
 #search-bar {
-  background-color: #2C2C2C;
+  background-color: #3b3b3b;
   border: none;
   width: 90%;
   height: 50px;
   margin: 0 auto;
-  box-shadow: -1px 9px 17px 6px rgba(20,20,20,0.75);
-  -webkit-box-shadow: -1px 9px 17px 6px rgba(20,20,20,0.75);
-  -moz-box-shadow: -1px 9px 17px 6px rgba(20,20,20,0.75);
   border-radius: 5px;
   color: rgb(151, 151, 151);
   font-size: 18px;
   padding: 0px 0px 0px 15px;
+  box-shadow:  24px 24px 48px #161616,
+  -24px -24px 48px #424242;
 }
 
 #search-bar:hover {
+  transition: all 0.5s;
   cursor: pointer;
-  background-color: rgb(51,50,50);
+  background-color: rgb(65, 64, 64);
+  box-shadow:  24px 24px 48px #202020,
+  -24px -24px 48px #424242;
 }
 
 #mic-button {
@@ -61,13 +63,14 @@ h3 {
   height: 50px;
   border-radius: 50px;
   box-shadow: -1px 9px 8px 3px rgba(25,25,25,0.75);
-  -webkit-box-shadow: -1px 9px 8px 3px rgba(25,25,25,0.75);
-  -moz-box-shadow: -1px 9px 8px 3px rgba(25,25,25,0.75);
 }
 
 #mic-button:hover {
+  transition: all .5s;
   cursor: pointer;
-  background-color: rgb(223, 223, 223);
+  background-color: rgb(247, 188, 188);
+  box-shadow: -1px 9px 8px 3px rgba(46, 46, 46, 0.75);
+
 }
 
 #mic-button:active {
