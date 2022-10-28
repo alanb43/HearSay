@@ -70,6 +70,14 @@ h3 {
   background-color: rgb(223, 223, 223);
 }
 
+#mic-button:active {
+  transition: all .5s;
+  background-color: rgb(245, 83, 83);
+  box-shadow: -1px 18px 57px -23px rgba(176,174,174,0.75);
+  -webkit-box-shadow: -1px 18px 57px -23px rgba(176,174,174,0.75);
+  -moz-box-shadow: -1px 18px 57px -23px rgba(176,174,174,0.75);
+}
+
 #mic-img {
   height: 35px;
   width: 35px;
