@@ -10,24 +10,7 @@ const App: React.FC = () => {
 
   const onMicClick = () => {
     // call backend - speech_manager.py
-    let endpoint = "";
-    axios({
-      method: 'get',
-      url: endpoint,
-      responseType: 'stream'
-    })
-    .then(function (response) {
-        setQuery(response.data);
-        onSubmit();
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  }
-
-  const onSubmit = () => {
-    // call backend - generate response and display on page
-    let endpoint = "";
+    let endpoint = "/v1/speech";
     axios.post(endpoint, {
       query: query
     })
@@ -37,7 +20,20 @@ const App: React.FC = () => {
     .catch(function (error) {
       console.error(error);
     });
-    console.log("hi");
+  }
+
+  const onSubmit = () => {
+    // call backend - generate response and display on page
+    let endpoint = "/v1/text";
+    axios.post(endpoint, {
+      query: query
+    })
+    .then(function (response) {
+      setResponse(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
   }
 
   let responseDiv = <div></div>
