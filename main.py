@@ -2,15 +2,17 @@ from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier
+from response_generation import ResponseGenerator
 
 import numpy as np
 
 def main():
     """Integrates systems to allow an end-to-end interaction."""
-    speech_manager = SpeechManager()
+    # speech_manager = SpeechManager()
     input_analyzer = InputAnalyzer()
     tweet_snagger = TweetSnagger()
     sentiment_analyzer = SentimentClassifier()
+    response_generator = ResponseGenerator()
     while True:
         try:
             # Decide whether to take speech or text input
@@ -18,7 +20,8 @@ def main():
             if talk_or_text == 'q':
                 break
             elif talk_or_text == 's':
-                utterance = speech_manager.speech_to_text()
+                # utterance = speech_manager.speech_to_text()
+                pass
             else:
                 utterance = input('Input phrase: ')
             analysis = input_analyzer.analyze(utterance)
@@ -40,7 +43,7 @@ def main():
             # TODO: add all entities to topics and customize for intents
             # Deal with known intents
             if primary_intent != "other":
-                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=1)
+                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=5)
             # Deal with unknown intents TODO: Update this, I didn't update with the rest of the file
             else: 
                 tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 100)
@@ -63,9 +66,18 @@ def main():
                     print(entities[0]["word"] + " has a negative sentiment")
 
             # Speech/text output
-            response = tweets[0]['content']
-            print ('Response tweet:', response)
-            speech_manager.text_to_speech(response)
+            context = ""
+            for tweet in tweets:
+                context += tweet['content'] + "\n"
+            # response = tweets[0]['content']
+            qa_input = {
+                'question': utterance,
+                'context': context
+            }
+            output = response_generator.generate_response(qa_input)
+            print(output)
+            # print ('Response tweet:', response)
+            # speech_manager.text_to_speech(response)
         
         except Exception as e:
             print("Exception occurred:", e)
