@@ -43,7 +43,7 @@ def main():
             # TODO: add all entities to topics and customize for intents
             # Deal with known intents
             if primary_intent != "other":
-                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=5)
+                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=10)
             # Deal with unknown intents TODO: Update this, I didn't update with the rest of the file
             else: 
                 tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 100)
@@ -74,8 +74,9 @@ def main():
                 'question': utterance,
                 'context': context
             }
+            # print(context)
             output = response_generator.generate_response(qa_input)
-            print(output)
+            print(output["answer"])
             # print ('Response tweet:', response)
             # speech_manager.text_to_speech(response)
         
