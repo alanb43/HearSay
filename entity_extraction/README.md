@@ -1,3 +1,8 @@
+## Using OpenAI
+
+1. Add a file in the project root called `.env`.
+2. Add a key called `OPENAI_API_KEY`.
+
 # Trained and tested basic transformer NER model that is in Jaseci
 
 I just copied the tfm_ner.jac file from the intro assignment
@@ -26,4 +31,3 @@ jaseci > jac run tfm_ner.jac -walk train -ctx "{\"train_file\": \"ner_train.json
 ```
 jaseci > jac run tfm_ner.jac -walk infer
 ```
-

@@ -130,4 +130,4 @@ dmypy.json
 .DS_Store
 glove.6B.100d.txt
 
-./entity_extraction/trained_model/pytorch_model.bin
+entity_extraction/trained_model/pytorch_model.bin
