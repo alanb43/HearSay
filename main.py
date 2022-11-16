@@ -7,7 +7,8 @@ import numpy as np
 
 def main():
     """Integrates systems to allow an end-to-end interaction."""
-    speech_manager = SpeechManager()
+    # speech_manager = SpeechManager()
+    speech_manager = None
     input_analyzer = InputAnalyzer()
     tweet_snagger = TweetSnagger()
     sentiment_analyzer = SentimentClassifier()
