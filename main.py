@@ -42,9 +42,13 @@ def main():
             # Deal with known intents
             if primary_intent != "other":
                 tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=1)
+                # Speech/text output
+                response = tweets[0]['content']
+                print ('Response tweet:', response)
+                # speech_manager.text_to_speech(response)
             # Deal with unknown intents TODO: Update this, I didn't update with the rest of the file
             else: 
-                tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 100)
+                tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 10)
                 output = np.zeros(3) # 0 - positive, 1 - neutral, 2 - negative
                 for tweet in tweets:
                     sentiment = sentiment_analyzer.analyze(tweet["content"])
@@ -63,10 +67,7 @@ def main():
                 elif idx == 2:
                     print(entities[0]["word"] + " has a negative sentiment")
 
-            # Speech/text output
-            response = tweets[0]['content']
-            print ('Response tweet:', response)
-            speech_manager.text_to_speech(response)
+
         
         except Exception as e:
             print("Exception occurred:", e)

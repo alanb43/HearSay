@@ -18,7 +18,10 @@ class TweetSnagger:
             'content': str
         }
         """
-        query = self._make_query(topics + [f'({intent})'], authors, replies, retweets)
+        if intent == "other":
+            query = self._make_query(topics, authors, replies, retweets)
+        else:
+            query = self._make_query(topics + [f'({intent})'], authors, replies, retweets)
         tweets = []
         print ("Making Twitter query:", query)
         for tweet in twitter.TwitterSearchScraper(query).get_items():
@@ -39,7 +42,7 @@ class TweetSnagger:
         if tweet.lang != 'en':
             print ("Bad tweet due to wrong language:", tweet.lang)
             return False
-        if self.intent_classifier.classify_intent(content)['labels'][0] != intent or self.intent_classifier.classify_intent(content)['scores'][0] < 0.4:
+        if (self.intent_classifier.classify_intent(content)['labels'][0] != intent or self.intent_classifier.classify_intent(content)['scores'][0] < 0.4) and intent != "other":
             print ("Bad tweet due to intent:", self.intent_classifier.classify_intent(content)['labels'][0], self.intent_classifier.classify_intent(content)['scores'][0])
             return False
         for topic in topics:
