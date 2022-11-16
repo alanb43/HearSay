@@ -13,16 +13,22 @@ def compute_metrics(eval_pred):
    f1 = load_f1.compute(predictions=predictions, references=labels)["f1"]
    return {"accuracy": accuracy, "f1": f1}
 
+def preprocess_function(examples):
+    return tokenizer(examples["text"], truncation=True)
 
-dataset = load_dataset("csv", data_files="dataset.csv")
+dataset = load_dataset("json", data_files="dataset.json")["train"]
 
 tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest")
-model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest", labels = 3)
-data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
+model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest")
+
+tokenized_train = dataset.map(preprocess_function, batched=True)
+
+
 
 repo_name = "finetune-sentiment-model-players-teams"
 
 training_args = TrainingArguments(
+   label_names = [0, 1, 2],
    output_dir=repo_name,
    learning_rate=2e-5,
    per_device_train_batch_size=16,
@@ -37,8 +43,9 @@ trainer = Trainer(
    model=model,
    args=training_args,
    train_dataset=tokenized_train,
-   eval_dataset=tokenized_test,
+   eval_dataset=tokenized_train,
    tokenizer=tokenizer,
-   data_collator=data_collator,
    compute_metrics=compute_metrics,
 )
+
+trainer.train()
