@@ -1,6 +1,8 @@
 from transformers import pipeline
 
-MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams/checkpoint-2'
+# Switch between the two if model doesn't work
+# MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams/checkpoint-2'
+MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
 class SentimentClassifier:
     "Analyzes text and returns positive, neutral, and negative"
