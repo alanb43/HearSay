@@ -42,13 +42,13 @@ class TweetSnagger:
         if tweet.lang != 'en':
             print ("Bad tweet due to wrong language:", tweet.lang)
             return False
-        if (self.intent_classifier.classify_intent(content)['labels'][0] != intent or self.intent_classifier.classify_intent(content)['scores'][0] < 0.4) and intent != "other":
-            print ("Bad tweet due to intent:", self.intent_classifier.classify_intent(content)['labels'][0], self.intent_classifier.classify_intent(content)['scores'][0])
-            return False
-        for topic in topics:
-            if topic.lower() not in content.lower():
-                print ("Bad tweet due to missing topic:", topic)
-                return False
+        # if (self.intent_classifier.classify_intent(content)['labels'][0] != intent or self.intent_classifier.classify_intent(content)['scores'][0] < 0.4) and intent != "other":
+        #     print ("Bad tweet due to intent:", self.intent_classifier.classify_intent(content)['labels'][0], self.intent_classifier.classify_intent(content)['scores'][0])
+        #     return False
+        # for topic in topics:
+        #     if topic.strip().lower() not in content.strip().lower():
+        #         print ("Bad tweet due to missing topic:", topic)
+        #         return False
         return True
 
     def _verify_source(self, source):
