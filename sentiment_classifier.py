@@ -1,18 +1,90 @@
 from transformers import pipeline
+from tweet_snagger import TweetSnagger
 
 # Switch between the two if model doesn't work
 # MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams/checkpoint-2'
 MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
+POSITIVE_SENTIMENT = "Positive"
+NEUTRAL_SENTIMENT = "Neutral"
+NEGATIVE_SENTIMENT = "Negative"
+
 class SentimentClassifier:
-    "Analyzes text and returns positive, neutral, and negative"
+    """
+    Derives positive, negative, or neutral sentiment from language.
+    Model fine-tuned on soccer and basketball tweets for different players.
+    """
 
     def __init__(self):
-        self.sentiment = pipeline(
+        self._analyze_pipeline = pipeline(
             task='sentiment-analysis',
             model=MODEL_DIR,
             tokenizer=MODEL_DIR,
         )
 
-    def analyze(self, text):
-        return self.sentiment(text)
+    def analyze(self, text: str):
+        """Returns sentiment and confidence for given text input."""
+        analysis = self._analyze_pipeline(text)[0]
+        return {"sentiment": analysis["label"], "confidence": analysis["score"]}
+
+    def batch_analysis(self, tweets: list):
+        """
+        Derives an overall sentiment for the batch of tweets.
+        Should be ran on a generally large pool of tweets, uses only high 
+            confidence datapoints to draw conclusions.
+        """
+
+        # this line doesn't make each object a pointer to each other
+        positive_count = neutral_count = negative_count = 0
+        positive_batch = [] # doing it
+        neutral_batch = []  # for these
+        negative_batch = [] # would however
+
+        for tweet in tweets:
+            analysis = self.analyze(tweet["content"])
+            sentiment, confidence = analysis["sentiment"], analysis["confidence"]
+            if confidence > 0.75:
+                if sentiment == POSITIVE_SENTIMENT:
+                    positive_count += 1
+                    positive_batch.append(tweet)
+                elif sentiment == NEUTRAL_SENTIMENT:
+                    neutral_count += 1
+                    neutral_batch.append(tweet)
+                else:
+                    negative_count += 1
+                    negative_batch.append(tweet)
+        
+        positive_conf = self._calculate_batch_confidence(positive_count,
+                                                         negative_count)
+        neutral_conf = self._calculate_batch_confidence(neutral_count,
+                                                        positive_count,
+                                                        negative_count)
+        negative_conf = self._calculate_batch_confidence(negative_count,
+                                                         positive_count)
+
+        best_result = max(positive_conf, neutral_conf, negative_conf)
+        if best_result < 0.50:
+            return "Sentiment could not be derived reliably"
+        
+        data = {"sentiment": "", "confidence": best_result}
+        if best_result == positive_conf:
+            data["sentiment"] = POSITIVE_SENTIMENT
+        elif best_result == neutral_conf:
+            data["sentiment"] = NEUTRAL_SENTIMENT
+        else:
+            data["sentiment"] = NEGATIVE_SENTIMENT
+
+        return data
+
+    def _calculate_batch_confidence(self, count1, count2, count3 = 0) -> float:
+        """
+        Calculates confidence of sentiment using # of high confidence tweets
+            for each sentiment.
+        Confidence derivation: y = 3x^3 - 0.9x^2 + 0.6, x = 1 - inverted ratio.
+        Confidence capped at 94.99%.
+        NOTE / FIXME: Confidence often returned as 94.99%. Need better math!
+        """
+        ratio = float(count1) / (count2 + count3)
+        inverse = 1.0 / ratio
+        math = 3 * ((1 - inverse) ** 3) - ((1 - inverse) ** 2) + 0.6
+        return min(0.9499, math) # caps confidence at 94.99%
