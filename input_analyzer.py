@@ -6,8 +6,9 @@ To use, it's required that you:
 
 from entity_classifier import EntityClassifier
 from intent_classifier import IntentClassifier
-from transformers import pipeline
 from intent import INTENTS
+
+import numpy as np
 
 MODEL_DIR = 'entity_extraction/trained_model/'
 
@@ -25,27 +26,24 @@ class InputAnalyzer:
         Returns dict of analysis in form:
         {
             "input": original subject input arg,
-            "intents": dict of intent(s) derived from intent classifier
+            "primary_intent": string of primary intent derived from classifier
             "entities": dict of entities derived from entity classifier
             "other": other information extracted (adjectives, pronouns, etc)
         }
         """
         analysis = {
             "input": subject, # original, unmodified subject
-            "intents": None, # maybe a pair of primary_intent, secondary_intent?
+            "intents": None, # string
             "entities": None, # a dictionary of <entity, type> pairs
-            "other": None # other information if we can extract it (adjectives, pronouns, etc)
+            "other": None # other info we may extract (adjectives,pronouns,etc)
         }
         
-        analysis['entities'] = self.__extract_entities(subject)
-        analysis['intents'] = self.__extract_intents(subject)
-        
-        # process_entities(entities) #  get them in a suitable form for easy integration with
-        # process_intents(intents)   #  twitter API / our system that handles twitter API?
+        analysis['entities'] = self.extract_entities(subject)
+        analysis['primary_intent'] = self.extract_primary_intent(subject)
 
         return analysis
 
-    def __extract_entities(self, subject: str):
+    def extract_entities(self, subject: str):
         """
         Finds entities within the subject string.
         Returns entities with prediction confidence % in a dictionary.
@@ -57,11 +55,15 @@ class InputAnalyzer:
         # maybe process the dict here to avoid passing along unneccessary info?
         return entity_dict
     
-    def __extract_intents(self, subject: str):
+    def extract_primary_intent(self, subject: str):
         """
         Determine intent of subject string.
         Here for intent people to write, unless unnecessary
         """
         intent_dict = self.__intent_classifier.classify_intent(subject)
-        # maybe process the dict here to avoid passing along unneccessary info?
-        return intent_dict
+        primary_intent = "other" # default
+        max_score = np.argmax(np.array(intent_dict["scores"]))
+        if intent_dict["scores"][max_score] > 0.3:
+            primary_intent = intent_dict["labels"][max_score]
+        
+        return primary_intent
