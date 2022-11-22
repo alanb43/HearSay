@@ -20,8 +20,10 @@ def main(method):
         if method == "speech":
             utterance = speech_manager.speech_to_text()
         else:
-            utterance = request.data["utterance"]
+            utterance = request.data["query"]
         
+        print("Received utterance: {}" % utterance)
+
         analysis = input_analyzer.analyze(utterance)
         intents, entities = analysis["intents"], analysis["entities"]
 
@@ -70,4 +72,6 @@ def main(method):
 
 
 if __name__ == "__main__":
-    app.run()
+    port = 5000
+    print("Running server on port {}" % port)
+    app.run(port=port)
