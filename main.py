@@ -3,21 +3,19 @@ from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier, POSITIVE_SENTIMENT, NEGATIVE_SENTIMENT, NEUTRAL_SENTIMENT
 from user_profile import UserProfile
+from intents import Intents
 
 import numpy as np
+from random import randrange
 
 speech_manager = SpeechManager()
 input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
 sentiment_analyzer = SentimentClassifier()
-user_profile = None
 
 def main():
     """Integrates systems to allow an end-to-end interaction."""
-    speech_manager = SpeechManager()
-    input_analyzer = InputAnalyzer()
-    tweet_snagger = TweetSnagger()
-    sentiment_analyzer = SentimentClassifier()
+    user_profile = None
     while True:
         try:
             # Decide whether to take speech or text input
@@ -35,13 +33,23 @@ def main():
             entities = analysis["entities"]
             # Determine entities/targets
             entity_words = [entity['word'] for entity in entities]
-
-            # TODO: add all entities to topics and customize for intents
-            # Deal with known intents
-            if "profile" in primary_intent:
+            
+            # create new user profile
+            if "profile" in primary_intent and user_profile is None:
                 user_profile = create_profile()
+            # intent is for user's favorite teams or players
+            elif "favorite" in primary_intent and user_profile is not None:
+                if "team" in primary_intent or "teams" in primary_intent:
+                    team = user_profile.teams[randrange(0, len(user_profile.teams))]
+                    tweets = tweet_snagger.snag_tweets([team], intent=Intents.TRADE, num_tweets=20)
+                    
+                elif "player" in primary_intent or "players" in primary_intent:
+                    player = user_profile.players[randrange(0, len(user_profile.players))]
+                    tweets = tweet_snagger.snag_tweets([player], intent="other", num_tweets=20)
 
-
+                # add batch sentiment analysis
+                
+            # either a trade or injury check
             elif primary_intent != "other":
                 tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=1)
                 # Speech/text output
