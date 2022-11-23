@@ -3,13 +3,16 @@ from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier
 from flask import Flask, request
+from flask_cors import CORS
 import numpy as np
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/v1/<method>", methods=["POST"])
 def main(method):
     """Integrates systems to allow an end-to-end interaction."""
+    print("Received request")
     speech_manager = SpeechManager()
     input_analyzer = InputAnalyzer()
     tweet_snagger = TweetSnagger()
@@ -73,5 +76,5 @@ def main(method):
 
 if __name__ == "__main__":
     port = 5000
-    print("Running server on port {}" % port)
+    print("Running server on port %d" % port)
     app.run(port=port)

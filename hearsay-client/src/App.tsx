@@ -26,7 +26,7 @@ const App: React.FC = () => {
 
   const onSubmit = () => {
     // call backend - generate response and display on page
-    let endpoint = "/v1/text";
+    let endpoint = "http://localhost:5000/v1/text";
     axios.post(endpoint, {
       query: query
     })

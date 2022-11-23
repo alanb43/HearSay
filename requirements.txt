@@ -7,7 +7,8 @@ pyaudio
 # m1 mac solution for install issues for pyaudio:
 # https://stackoverflow.com/a/73166852
 pyttsx3 # text to speech
-transformers==2.1.0
+transformers
 snscrape
 pandas
 flask
+flask_cors
