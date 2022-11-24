@@ -1,4 +1,4 @@
-from speech_manager import SpeechManager
+# from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier
@@ -43,7 +43,7 @@ def main():
             # TODO: add all entities to topics and customize for intents
             # Deal with known intents
             if primary_intent != "other":
-                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=10)
+                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=100)
             # Deal with unknown intents TODO: Update this, I didn't update with the rest of the file
             else: 
                 tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 100)
@@ -64,21 +64,9 @@ def main():
                     print(entities[0]["word"] + " has a neutral sentiment")
                 elif idx == 2:
                     print(entities[0]["word"] + " has a negative sentiment")
-
-            # Speech/text output
-            context = ""
-            for tweet in tweets:
-                context += tweet['content'] + "\n"
-            # response = tweets[0]['content']
-            qa_input = {
-                'question': utterance,
-                'context': context
-            }
-            # print(context)
-            output = response_generator.generate_response(qa_input)
-            print(output["answer"])
-            # print ('Response tweet:', response)
-            # speech_manager.text_to_speech(response)
+            print ("Snagged all tweets, moving on to response generation")
+            output = response_generator.generate_response(utterance, tweets)
+            print(output)
         
         except Exception as e:
             print("Exception occurred:", e)
