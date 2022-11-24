@@ -4,6 +4,7 @@
   margin-top: 15%;
   color: white;
   width: 50%;
+  list-style-type: none;
 }
 
 #search-bar {
@@ -32,6 +33,7 @@
   border-radius: 40px;
   position: absolute;
   filter: invert(50%);
+  margin-top: 5px;
 }
 
 #mic-button:hover {
@@ -79,21 +81,46 @@
   background-color: rgb(119, 119, 119);
 }
 
-#responseDiv {
+
+#conversation {
+  list-style-type: none;
+  margin: none;
   margin: 0 auto;
-  margin-top: 35px;
-  width: 95%;
-  background-color: #296996;
-  color: white;
-  font-size: 18px;
-  border-radius: 10px;
-  min-height: 50px;
-  text-align: center;
-  box-shadow: 1px 7px 12px 0px rgba(28,28,28,0.75);
-  -webkit-box-shadow: 1px 7px 12px 0px rgba(28,28,28,0.75);
-  -moz-box-shadow: 1px 7px 12px 0px rgba(28,28,28,0.75);
+  padding: none;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+#query {
+  padding: 15px;
+  background:rgb(60, 153, 165);
+  border-radius: 15px;
+  margin-bottom: -10px;
+  width: 60%;
+  text-align: left;
+  position: relative;
+  margin-left: 310px;
+}
+
+#query-name {
+  position: relative;
+  margin-right: 15px;
+  text-align: right;
+  margin-bottom: 0;
 }
 
 #response {
-  line-height: 50px;
+  padding: 15px;
+  background: rgb(81, 156, 106);
+  border-radius: 15px;
+  margin-bottom: -10px;
+  width: 60%;
+  text-align: left;
+}
+
+#response-name {
+  position: relative;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: 0;
 }
