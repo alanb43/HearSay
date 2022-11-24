@@ -1,6 +1,6 @@
 from transformers import pipeline
 from tweet_snagger import TweetSnagger
-
+import math
 # Switch between the two if model doesn't work
 # MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams/checkpoint-2'
 MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
@@ -80,11 +80,10 @@ class SentimentClassifier:
         """
         Calculates confidence of sentiment using # of high confidence tweets
             for each sentiment.
-        Confidence derivation: y = 3x^3 - 0.9x^2 + 0.6, x = 1 - inverted ratio.
-        Confidence capped at 94.99%.
-        NOTE / FIXME: Confidence often returned as 94.99%. Need better math!
+        Calculates ratio of current sentiment versus other sentiments
+        Then returns 1 - 1/(1+0.8*x), bounds between 0 and 1, if the ratio is 
+        slightly higher then 0.5 the confidence will be 0.5
         """
-        ratio = float(count1) / (count2 + count3)
-        inverse = 1.0 / ratio
-        math = 3 * ((1 - inverse) ** 3) - ((1 - inverse) ** 2) + 0.6
-        return min(0.9499, math) # caps confidence at 94.99%
+        others = count2 + count3 + 0.0001
+        x = count1/others
+        return 1 - 1/(1+0.8*x)

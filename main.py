@@ -1,7 +1,7 @@
 from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
-from sentiment_classifier import SentimentClassifier
+from sentiment_classifier import SentimentClassifier, POSITIVE_SENTIMENT, NEGATIVE_SENTIMENT, NEUTRAL_SENTIMENT
 
 import numpy as np
 
@@ -49,22 +49,13 @@ def main():
             # Deal with unknown intents TODO: Update this, I didn't update with the rest of the file
             else: 
                 tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 10)
-                output = np.zeros(3) # 0 - positive, 1 - neutral, 2 - negative
-                for tweet in tweets:
-                    sentiment = sentiment_analyzer.analyze(tweet["content"])
-                    if sentiment[0]["label"] == "Neutral":
-                        output[1] +=1
-                    elif sentiment[0]["label"] == "Positive":
-                        output[0] +=1
-                    elif sentiment[0]["label"] == "Negative":
-                        output[2] +=1
-                idx = np.argmax(output)
-
-                if idx == 0:
+                output = sentiment_analyzer.batch_analysis(tweets)
+                sentiment, confidence = output["sentiment"], output["confidence"]
+                if sentiment == POSITIVE_SENTIMENT:
                     print(entities[0]["word"] + " has a positive sentiment")
-                elif idx == 1:
+                elif sentiment == NEUTRAL_SENTIMENT:
                     print(entities[0]["word"] + " has a neutral sentiment")
-                elif idx == 2:
+                elif sentiment == NEGATIVE_SENTIMENT:
                     print(entities[0]["word"] + " has a negative sentiment")
 
 
