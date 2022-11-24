@@ -6,7 +6,10 @@ import axios from 'axios';
 const App: React.FC = () => {
 
   const [query, setQuery] = useState('');
-  const [response, setResponse] = useState('');
+  // const [response, setResponse] = useState('');
+
+  const [queryList, setQueryList] = useState([]);
+  const [responseList, setResponseList] = useState([]);
 
   const onMicClick = () => {
     // call backend - speech_manager.py
@@ -26,23 +29,67 @@ const App: React.FC = () => {
 
   const onSubmit = () => {
     // call backend - generate response and display on page
-    let endpoint = "http://localhost:5000/v1/text";
-    axios.post(endpoint, {
-      query: query
-    })
-      .then(function (response) {
-        setResponse(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    setQueryList(queryList => [...queryList, query]);
+    setQuery('');
+    let response = "Sample Response";
+    setResponseList(responseList => [...responseList, response]);
+
+    // let endpoint = "http://localhost:5000/v1/text";
+    // axios.post(endpoint, {
+    //   query: query
+    // })
+    //   .then(function (response) {
+    //     setResponse(response.data);
+    //     setResponseList([...response]);
+    //   })
+    //   .catch(function (error) {
+    //     console.error(error);
+    //   });
   }
 
-  let responseDiv = <div></div>
-  if (response !== '') {
-    responseDiv = <div id="responseDiv">
-      <p id="response">{response}</p>
-    </div>
+
+  let conversation = [];
+
+  let searchBar = <div></div>
+  if (queryList.length === 0) {
+    searchBar = 
+    <div>
+        <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
+        <input
+          id="search-bar"
+          placeholder="Type a question, or click the microphone and ask one!"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          onSubmit={onSubmit}
+        />
+        <div id="mic-button" onClick={onMicClick}>
+          <img id="mic-img" src="mic.png" alt="" />
+        </div>
+      </div>
+      <button id="submit-button" onClick={onSubmit}>Submit</button>
+    </div>;
+  }
+  else {
+    for (let i = 0; i < queryList.length; i++) {
+      conversation.push(<div><div id="query">{queryList[i]}</div><p id="query-name">User</p></div>);
+      conversation.push(<div><div id="response">{responseList[i]}</div><p id="response-name">HearSay</p></div>);
+    }
+    searchBar = 
+    <div style={{marginBottom: '100px'}}>
+      <div style={{display: 'flex', justifyContent: 'end', alignItems: 'center', }}>
+      <input
+        id="search-bar"
+        placeholder="Type a question, or click the microphone and ask one!"
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        onSubmit={onSubmit}
+      />
+      <div id="mic-button" onClick={onMicClick}>
+        <img id="mic-img" src="mic.png" alt="" />
+      </div>
+      </div>
+      <button id="submit-button" onClick={onSubmit}>Submit</button>
+    </div>;
   }
 
   return (
@@ -64,21 +111,10 @@ const App: React.FC = () => {
       <h3 style={{ fontSize: 16, marginBottom: 25 }}>
         Rumor has it we've got all the answers you need.
       </h3>
-      {/* search bar */}
-      <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
-        <input
-          id="search-bar"
-          placeholder="Type a question, or click the microphone and ask one!"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          onSubmit={onSubmit}
-        />
-        <div id="mic-button" onClick={onMicClick}>
-          <img id="mic-img" src="mic.png" alt="" />
-        </div>
+      <div id="conversation">
+        {conversation}
       </div>
-      <button id="submit-button" onClick={onSubmit}>Submit</button>
-      {responseDiv}
+      {searchBar}
     </div>
   );
 
