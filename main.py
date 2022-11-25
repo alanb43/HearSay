@@ -1,11 +1,10 @@
 from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
-from sentiment_classifier import SentimentClassifier, POSITIVE_SENTIMENT, NEGATIVE_SENTIMENT, NEUTRAL_SENTIMENT
+from sentiment_classifier import SentimentClassifier, Sentiment
 from user_profile import UserProfile
 from intents import Intents
 
-import numpy as np
 from random import randrange
 
 speech_manager = SpeechManager()
@@ -23,6 +22,7 @@ def main():
             if talk_or_text == 'q':
                 break
             elif talk_or_text == 's':
+                speech_manager.text_to_speech("What's up big guy?")
                 utterance = speech_manager.speech_to_text()
             else:
                 utterance = input('Input phrase: ')
@@ -39,15 +39,32 @@ def main():
                 user_profile = create_profile()
             # intent is for user's favorite teams or players
             elif "favorite" in primary_intent and user_profile is not None:
+                entity = None
+                tweets = []
                 if "team" in primary_intent or "teams" in primary_intent:
+                    entity = "team"
                     team = user_profile.teams[randrange(0, len(user_profile.teams))]
-                    tweets = tweet_snagger.snag_tweets([team], intent=Intents.TRADE, num_tweets=20)
+                    tweets = tweet_snagger.snag_tweets([team], intent=Intents.TRADE, num_tweets=25)
                     
                 elif "player" in primary_intent or "players" in primary_intent:
+                    entity = "player"
                     player = user_profile.players[randrange(0, len(user_profile.players))]
-                    tweets = tweet_snagger.snag_tweets([player], intent="other", num_tweets=20)
+                    tweets = tweet_snagger.snag_tweets([player], intent="other", num_tweets=25)
+                else:
+                    continue
+                
+                analysis = sentiment_analyzer.batch_analysis(tweets)
 
-                # add batch sentiment analysis
+                if type(analysis) == dict:
+                    speech = "Overall, it seems like "
+                    sentiment = analysis["sentiment"]
+                    adjective = find_adjective(sentiment)
+                    if entity == "team":
+                        speech += f" the {team} team is doing {adjective} lately"
+                    else:
+                        speech += f" {player} has playing {adjective} recently"
+                    
+                    speech_manager.text_to_speech(speech)
                 
             # either a trade or injury check
             elif primary_intent != "other":
@@ -61,11 +78,11 @@ def main():
                 tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 10)
                 output = sentiment_analyzer.batch_analysis(tweets)
                 sentiment, confidence = output["sentiment"], output["confidence"]
-                if sentiment == POSITIVE_SENTIMENT:
+                if sentiment == Sentiment.POSITIVE:
                     print(entities[0]["word"] + " has a positive sentiment")
-                elif sentiment == NEUTRAL_SENTIMENT:
+                elif sentiment == Sentiment.NEUTRAL:
                     print(entities[0]["word"] + " has a neutral sentiment")
-                elif sentiment == NEGATIVE_SENTIMENT:
+                elif sentiment == Sentiment.NEGATIVE:
                     print(entities[0]["word"] + " has a negative sentiment")
 
 
@@ -88,6 +105,21 @@ def create_profile() -> UserProfile:
     players = [e['word'] for e in input_analyzer.extract_entities(players_input)]
     speech_manager.text_to_speech("Got it. I've set up your profile!")
     return UserProfile(name,teams,players)
+
+def find_adjective(sentiment: str) -> str:
+    """Given a sentiment, returns a fitting adjective."""
+    if sentiment == Sentiment.POSITIVE:
+        random_positive_index = randrange(0, len(Sentiment.POSITIVE_WORDS))
+        return Sentiment.POSITIVE_WORDS[random_positive_index]
+    elif sentiment == Sentiment.NEUTRAL:
+        random_neutral_index = randrange(0, len(Sentiment.NEUTRAL_WORDS))
+        return Sentiment.POSITIVE_WORDS[random_neutral_index]
+    elif sentiment == Sentiment.NEGATIVE:
+        random_negative_index = randrange(0, len(Sentiment.NEGATIVE_WORDS))
+        return Sentiment.POSITIVE_WORDS[random_negative_index]
+    
+    return "A non-real sentiment was passed to find_adjective()"
+
 
 if __name__ == "__main__":
     main()
