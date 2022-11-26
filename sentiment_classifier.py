@@ -2,8 +2,8 @@ from transformers import pipeline
 from tweet_snagger import TweetSnagger
 import math
 # Switch between the two if model doesn't work
-# MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams/checkpoint-2'
-MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams'
+# MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
 POSITIVE_SENTIMENT = "Positive"
 NEUTRAL_SENTIMENT = "Neutral"
