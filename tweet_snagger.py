@@ -24,8 +24,8 @@ class TweetSnagger:
         for tweet in twitter.TwitterSearchScraper(query).get_items():
             if len(tweets) == num_tweets:
                 break
-
-            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet, intent) and tweet.likeCount >= min_likes:
+            
+            if self._verify_source(tweet.source): # and self._verify_relevance(topics, tweet, intent) and tweet.likeCount >= min_likes:
                 tweets.append({
                     'url': tweet.url,
                     'user': tweet.user.username, 
@@ -34,19 +34,19 @@ class TweetSnagger:
         
         return tweets
     
-    def _verify_relevance(self, topics, tweet, intent):
-        content = tweet.content
-        if tweet.lang != 'en':
-            print ("Bad tweet due to wrong language:", tweet.lang)
-            return False
-        if self.intent_classifier.classify_intent(content)['labels'][0] != intent or self.intent_classifier.classify_intent(content)['scores'][0] < 0.4:
-            print ("Bad tweet due to intent:", self.intent_classifier.classify_intent(content)['labels'][0], self.intent_classifier.classify_intent(content)['scores'][0])
-            return False
-        for topic in topics:
-            if topic.lower() not in content.lower():
-                print ("Bad tweet due to missing topic:", topic)
-                return False
-        return True
+    # def _verify_relevance(self, topics, tweet, intent):
+    #     content = tweet.content
+    #     if tweet.lang != 'en':
+    #         print ("Bad tweet due to wrong language:", tweet.lang)
+    #         return False
+    #     if self.intent_classifier.classify_intent(content)['labels'][0] != intent or self.intent_classifier.classify_intent(content)['scores'][0] < 0.4:
+    #         print ("Bad tweet due to intent:", self.intent_classifier.classify_intent(content)['labels'][0], self.intent_classifier.classify_intent(content)['scores'][0])
+    #         return False
+    #     for topic in topics:
+    #         if topic.lower() not in content.lower():
+    #             print ("Bad tweet due to missing topic:", topic)
+    #             return False
+    #     return True
 
     def _verify_source(self, source):
         """Returns whether source of tweet was human or not (99% confidence)."""

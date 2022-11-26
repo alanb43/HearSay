@@ -2,31 +2,40 @@ from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import numpy as np
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/v1/<method>", methods=["POST"])
-def main(method):
-    """Integrates systems to allow an end-to-end interaction."""
-    print("Received request")
-    speech_manager = SpeechManager()
-    input_analyzer = InputAnalyzer()
-    tweet_snagger = TweetSnagger()
-    sentiment_analyzer = SentimentClassifier()
-    # while True:
-    try:
-        # Decide whether to take speech or text input
-        if method == "speech":
-            utterance = speech_manager.speech_to_text()
-        else:
-            utterance = request.data["query"]
-        
-        print("Received utterance: {}" % utterance)
+speech_manager = SpeechManager()
+input_analyzer = InputAnalyzer()
+tweet_snagger = TweetSnagger()
+sentiment_analyzer = SentimentClassifier()
 
+@app.route("/v1/speech")
+def pre_speech():
+    try:
+        utterance = speech_manager.speech_to_text()
+        print("in pre_speech")
+        print(utterance)
+        return jsonify({"query": utterance})
+    except Exception as e:
+        print("Exception occurred:", e)
+        return jsonify({"error": "No one's talking about this, why don't you tweet it?"})
+
+@app.route("/v1/text", methods=["POST"])
+def main():
+    """Integrates systems to allow an end-to-end interaction."""
+    print(f"Received text request")
+    try:
+
+        utterance = request.get_json()["query"]
+        speech_enabled = request.get_json()["speech"]
+        
+        print(f"Received utterance: {utterance}, speech_enabled: {speech_enabled}")
         analysis = input_analyzer.analyze(utterance)
         intents, entities = analysis["intents"], analysis["entities"]
 
@@ -68,13 +77,17 @@ def main(method):
         # Speech/text output
         response = tweets[0]['content']
         # print ('Response tweet:', response)
-        speech_manager.text_to_speech(response)
-    
+        if speech_enabled:
+            speech_manager.text_to_speech(response)
+
     except Exception as e:
         print("Exception occurred:", e)
+        return json.dumps({"response": "No one's talking about this, why don't you tweet it?"})
 
+    print(json.dumps({"response": response}))
+    return jsonify({"response": response})
 
 if __name__ == "__main__":
     port = 5000
     print("Running server on port %d" % port)
-    app.run(port=port)
+    app.run(port=port, debug=True)
