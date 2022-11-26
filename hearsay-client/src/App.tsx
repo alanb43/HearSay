@@ -4,12 +4,9 @@ import axios from 'axios';
 
 
 const App: React.FC = () => {
-
   const [query, setQuery] = useState('');
-  // const [response, setResponse] = useState('');
-
-  const [queryList, setQueryList] = useState([]);
-  const [responseList, setResponseList] = useState([]);
+  const [queryList, setQueryList] = useState([""]);
+  const [responseList, setResponseList] = useState([""]);
 
   const onMicClick = () => {
     // call backend - speech_manager.py
@@ -30,25 +27,21 @@ const App: React.FC = () => {
   const onSubmit = () => {
     // call backend - generate response and display on page
     setQueryList(queryList => [...queryList, query]);
-    setQuery('');
-    let response = "Sample Response";
-    setResponseList(responseList => [...responseList, response]);
-
-    // let endpoint = "http://localhost:5000/v1/text";
-    // axios.post(endpoint, {
-    //   query: query
-    // })
-    //   .then(function (response) {
-    //     setResponse(response.data);
-    //     setResponseList([...response]);
-    //   })
-    //   .catch(function (error) {
-    //     console.error(error);
-    //   });
+    let endpoint = "http://localhost:5000/v1/text";
+    axios.post(endpoint, {
+      query: query
+    })
+      .then(function (response) {
+        setQuery('');
+        setResponseList(responseList => [...responseList, response.data]);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
 
-  let conversation = [];
+  let conversation : JSX.Element[] = [];
 
   let searchBar = <div></div>
   if (queryList.length === 0) {
