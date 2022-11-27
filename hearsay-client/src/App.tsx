@@ -43,11 +43,11 @@ const App: React.FC = () => {
     setAwaitingResponse(true);
     axios.post(url, { "query": query })
       .then((response) => {
-        setQuery('');
         setAwaitingResponse(false);
         addBotMessage(response.data["response"]);
       })
       .catch(console.error);
+    setQuery('');
   }, [addBotMessage, addUserMessage]);
 
   const onSubmit = () => {
@@ -86,7 +86,11 @@ const App: React.FC = () => {
         <div className="chat-bubble" style={{ backgroundColor: props.side === 'left' ? blue : green }}>
           {
             (props.text == null || props.text === '')
-              ? <div className="dot-typing" style={{ margin: '0 auto', bottom: '-7px' }}>&nbsp;</div>
+              ? (
+                <div style={{ margin: '0 16px' }}>
+                  <div className="dot-typing" style={{ margin: '0 auto', bottom: '-7px' }} />
+                </div>
+              )
               : props.text
           }
         </div>
@@ -95,7 +99,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="App">
+    <div className="App" style={{ marginTop: messages.length < 1 ? '10%' : '2%' }}>
       <div style={{
         display: 'flex',
         flexDirection: 'row',
@@ -137,6 +141,7 @@ const App: React.FC = () => {
             value={query}
             onChange={e => setQuery(e.target.value)}
             onSubmit={onSubmit}
+            onKeyPress={(e) => e.key === 'Enter' ? onSubmit() : null}
           />
           <div id="mic-button" onClick={onMicClick}>
             <img id="mic-img" src="mic.png" alt="" />
@@ -146,7 +151,6 @@ const App: React.FC = () => {
       </div>
     </div>
   );
-
 };
 
 export default App;
