@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import * as $ from "jquery";
 
 const endpoint : string = "http://127.0.0.1:5000";
 const speechRoute : string = "/v1/speech"
@@ -32,6 +33,7 @@ const App: React.FC = () => {
 
   const onMicClick = () => {
     // call backend - speech_manager.py
+    $("#mic-message").show().delay(5000).fadeOut();
     let url = `${endpoint}${speechRoute}`;
     axios.get(url)
       .then(function (response) {
@@ -117,6 +119,7 @@ const App: React.FC = () => {
           <img id="mic-img" src="mic.png" alt="" />
         </div>
         </div>
+        <div id="mic-message" style={{display: 'none', marginTop: '25px', fontSize: '16px'}}>Wait 1 second before speaking!</div>
         <button id="submit-button" onClick={onSubmit}>Submit</button>
       </div>
     </div>
