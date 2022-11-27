@@ -1,5 +1,6 @@
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
+from google_searcher import GoogleSearcher
 from sentiment_classifier import SentimentClassifier, POSITIVE_SENTIMENT, NEGATIVE_SENTIMENT, NEUTRAL_SENTIMENT
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -13,17 +14,12 @@ CORS(app)
 
 input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
+google_searcher = GoogleSearcher()
 sentiment_analyzer = SentimentClassifier()
 response_generator = ResponseGenerator()
 
-@app.route("/v1/text", methods=["POST"])
-def main():
-    """Integrates systems to allow an end-to-end interaction."""
-    print(f"Received text request")
+def generate_response(utterance: str):
     try:
-        utterance = request.get_json()["query"]
-        
-        print(f"Received utterance: {utterance}")
         analysis = input_analyzer.analyze(utterance)
         intents, entities = analysis["intents"], analysis["entities"]
 
@@ -36,6 +32,9 @@ def main():
 
         # Determine entities/targets
         entity_words = [entity['word'] for entity in entities]
+
+        for result in google_searcher.get_tweets(utterance):
+            print(result)
 
         # TODO: add all entities to topics and customize for intents
         # Deal with known intents
@@ -62,15 +61,20 @@ def main():
             elif idx == 2:
                 print(entities[0]["word"] + " has a negative sentiment")
 
+        print(f"Retrieved tweets: {tweets}")
+
         # response = tweets[0]['content']
         response = response_generator.generate_response(utterance, tweets)
 
     except Exception as e:
         print("Exception occurred:", e)
-        return json.dumps({"response": "No one's talking about this, why don't you tweet it?"})
+        return "No one's talking about this, why don't you tweet it?"
 
-    print(json.dumps({"response": response}))
-    return jsonify({"response": response})
+    return response
+
+@app.route("/v1/text", methods=["POST"])
+def main():
+    return jsonify({"response": generate_response(request.get_json()["query"])})
 
 if __name__ == "__main__":
     port = 5000

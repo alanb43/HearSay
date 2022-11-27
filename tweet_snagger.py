@@ -4,7 +4,6 @@ from intent import INTENTS
 
 class TweetSnagger:
     """Snags sports tweets from Twitter."""
-
     def __init__(self):
         self.intent_classifier = IntentClassifier(INTENTS)
 

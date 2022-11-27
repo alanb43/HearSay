@@ -15,3 +15,6 @@ snscrape
 pandas
 flask
 flask_cors
+openai
+googlesearch-python
+tweepy
