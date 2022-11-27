@@ -31,11 +31,9 @@ def main():
     """Integrates systems to allow an end-to-end interaction."""
     print(f"Received text request")
     try:
-
         utterance = request.get_json()["query"]
-        speech_enabled = request.get_json()["speech"]
         
-        print(f"Received utterance: {utterance}, speech_enabled: {speech_enabled}")
+        print(f"Received utterance: {utterance}")
         analysis = input_analyzer.analyze(utterance)
         intents, entities = analysis["intents"], analysis["entities"]
 
@@ -77,8 +75,8 @@ def main():
         # Speech/text output
         response = tweets[0]['content']
         # print ('Response tweet:', response)
-        if speech_enabled:
-            speech_manager.text_to_speech(response)
+        # if speech_enabled:
+        #    speech_manager.text_to_speech(response)
 
     except Exception as e:
         print("Exception occurred:", e)
