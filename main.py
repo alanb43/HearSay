@@ -78,5 +78,7 @@ def main():
 
 if __name__ == "__main__":
     port = 5000
-    print("Running server on port %d" % port)
     app.run(port=port, debug=True)
+    print("Warming up the AI")
+    generate_response('')
+    print("Ready to receive commands")
