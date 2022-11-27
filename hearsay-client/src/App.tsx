@@ -127,6 +127,7 @@ const App: React.FC = () => {
           <ChatBubble side="right" text={transcript} />
         }
       </div>
+      {listening && <div style={{ marginBottom: 24 }}>You are speaking...</div>}
       {/* search bar */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center', }}>
@@ -143,7 +144,6 @@ const App: React.FC = () => {
         </div>
         <button id="submit-button" onClick={onSubmit}>Submit</button>
       </div>
-      {listening && <div>You are speaking...</div>}
     </div>
   );
 
