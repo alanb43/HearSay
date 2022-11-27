@@ -27,8 +27,8 @@ class TweetSnagger:
         for tweet in twitter.TwitterSearchScraper(query).get_items():
             if len(tweets) == num_tweets:
                 break
-
-            if self._verify_source(tweet.source) and self._verify_relevance(topics, tweet, intent) and tweet.likeCount >= min_likes:
+            
+            if self._verify_source(tweet.source): # and self._verify_relevance(topics, tweet, intent) and tweet.likeCount >= min_likes:
                 tweets.append({
                     'url': tweet.url,
                     'user': tweet.user.username, 
