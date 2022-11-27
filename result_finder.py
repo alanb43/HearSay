@@ -3,10 +3,9 @@ import pprint
 
 API_KEY = "11c415ed489cd6c54fcd546fbcbad344c88e7ce4ed3a4f96b4460024da51fe23"
 params = {
-    "q": "netherlands national soccer",
+    "q": "dallas mavericks",
     "api_key": API_KEY
 }
-
 
 search = GoogleSearch(params)
 results = search.get_dict()
@@ -33,11 +32,12 @@ def get_recent_result(team: str, national_team_soccer: bool):
             date = spotlight["date"]
 
             if ',' in date:
-                result += f" is playing {date} "
+                result += f" are playing {date} "
             else:
                 result += f" played {date} "
         # else:
-
+    
+    # result = "The {team} played against {enemy}, winning/losing score to score"
 
     except KeyError:
         return "Couldn't find a recent score."
