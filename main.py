@@ -14,6 +14,7 @@ CORS(app)
 input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
 sentiment_analyzer = SentimentClassifier()
+response_generator = ResponseGenerator()
 
 @app.route("/v1/text", methods=["POST"])
 def main():
@@ -61,7 +62,8 @@ def main():
             elif idx == 2:
                 print(entities[0]["word"] + " has a negative sentiment")
 
-        response = tweets[0]['content']
+        # response = tweets[0]['content']
+        response = response_generator.generate_response(utterance, tweets)
 
     except Exception as e:
         print("Exception occurred:", e)
