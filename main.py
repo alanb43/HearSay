@@ -1,4 +1,3 @@
-from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier, POSITIVE_SENTIMENT, NEGATIVE_SENTIMENT, NEUTRAL_SENTIMENT
@@ -10,21 +9,9 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# speech_manager = SpeechManager()
 input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
 sentiment_analyzer = SentimentClassifier()
-
-@app.route("/v1/speech")
-def pre_speech():
-    try:
-        utterance = speech_manager.speech_to_text()
-        print("in pre_speech")
-        print(utterance)
-        return jsonify({"query": utterance})
-    except Exception as e:
-        print("Exception occurred:", e)
-        return jsonify({"error": "No one's talking about this, why don't you tweet it?"})
 
 @app.route("/v1/text", methods=["POST"])
 def main():
@@ -72,11 +59,7 @@ def main():
             elif idx == 2:
                 print(entities[0]["word"] + " has a negative sentiment")
 
-        # Speech/text output
         response = tweets[0]['content']
-        # print ('Response tweet:', response)
-        # if speech_enabled:
-        #    speech_manager.text_to_speech(response)
 
     except Exception as e:
         print("Exception occurred:", e)
