@@ -1,6 +1,7 @@
 from transformers import pipeline
 from relevancy_analyzer import RelevancyAnalyzer
 from summarizer import Summarizer
+from sentiment_classifier import SentimentClassifier
 from typing import List
 
 class ResponseGenerator:
@@ -10,16 +11,19 @@ class ResponseGenerator:
         self.relevancy_analyzer = RelevancyAnalyzer()
         self.qa_model = pipeline('question-answering', model=model_name, tokenizer=model_name)
         self.summarizer = Summarizer()
+        self.sentiment_classifier = SentimentClassifier()
 
     def generate_response(self, question: str, tweets: List[str]) -> str:
         raw_tweets = [x['content'] for x in tweets]
         relevant_tweets = self.__get_relevant_tweets(question, raw_tweets)
-        answer = self.__get_question_answer(question, '\n'.join(raw_tweets))
+        answer = self.__get_question_answer(question, '\n'.join(relevant_tweets))
         summary = self.__summarize_text(relevant_tweets)[0]['summary_text']
+        sentiment = self.__get_sentiment_analysis(relevant_tweets)
         response = f'''
         Here is a relevant tweet:\n{relevant_tweets[0]}
         Here is the answer to your question: {answer}
         Here is a summary: {summary}
+        The overall sentiment is {sentiment['sentiment']} with confidence {sentiment['confidence']}
         '''
         return response
 
@@ -36,5 +40,8 @@ class ResponseGenerator:
         }
         return self.qa_model(qa_input)['answer']
 
-    def __get_sentiment_analysis(self, tweets_input: List[str]) -> str:
-        return "Sentiment"
+    def __get_sentiment_analysis(self, tweets_input: List[str]):
+        sentiment = self.sentiment_classifier.batch_analysis(tweets_input)
+        if isinstance(sentiment, str):
+            return {'sentiment': 'null', 'confidence': 'null'}
+        return sentiment

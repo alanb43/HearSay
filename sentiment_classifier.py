@@ -41,7 +41,7 @@ class SentimentClassifier:
         negative_batch = [] # would however
 
         for tweet in tweets:
-            analysis = self.analyze(tweet["content"])
+            analysis = self.analyze(tweet)
             sentiment, confidence = analysis["sentiment"], analysis["confidence"]
             if confidence > 0.75:
                 if sentiment == POSITIVE_SENTIMENT:
@@ -53,7 +53,6 @@ class SentimentClassifier:
                 else:
                     negative_count += 1
                     negative_batch.append(tweet)
-        
         positive_conf = self._calculate_batch_confidence(positive_count,
                                                          negative_count)
         neutral_conf = self._calculate_batch_confidence(neutral_count,
