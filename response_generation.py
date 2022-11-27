@@ -16,14 +16,15 @@ class ResponseGenerator:
     def generate_response(self, question: str, tweets: List[str]) -> str:
         raw_tweets = [x['content'] for x in tweets]
         relevant_tweets = self.__get_relevant_tweets(question, raw_tweets)
-        answer = self.__get_question_answer(question, '\n'.join(relevant_tweets))
-        summary = self.__summarize_text(relevant_tweets)[0]['summary_text']
+        answer = self.__get_question_answer(question, '\n'.join(relevant_tweets)).replace('\n', '')
+        summary = self.__summarize_text(relevant_tweets)[0]['summary_text'].replace('\n', '')
         sentiment = self.__get_sentiment_analysis(relevant_tweets)
+        most_relevant_tweet = relevant_tweets[0].replace('\n', '')
         response = f'''
-        Here is a relevant tweet:\n{relevant_tweets[0]}
-        Here is the answer to your question: {answer}
-        Here is a summary: {summary}
-        The overall sentiment is {sentiment['sentiment']} with confidence {sentiment['confidence']}
+        {summary}
+        The overall sentiment is {sentiment['sentiment']}.
+        The Short answer is "{answer}".
+        The most relevant tweet is "{most_relevant_tweet}"
         '''
         return response
 
