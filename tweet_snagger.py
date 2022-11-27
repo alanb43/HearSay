@@ -34,7 +34,6 @@ class TweetSnagger:
                     'user': tweet.user.username, 
                     'content': tweet.content
                 })
-        
         return tweets
     
     def _verify_relevance(self, topics, tweet, intent):

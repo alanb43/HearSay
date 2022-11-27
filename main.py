@@ -1,9 +1,11 @@
-from speech_manager import SpeechManager
+# from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
 from sentiment_classifier import SentimentClassifier, POSITIVE_SENTIMENT, NEGATIVE_SENTIMENT, NEUTRAL_SENTIMENT
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from response_generation import ResponseGenerator
+
 import numpy as np
 import json
 
