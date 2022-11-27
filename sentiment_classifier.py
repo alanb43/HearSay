@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from random import randrange
 
 # Switch between the two if model doesn't work
-# MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams/checkpoint-2'
-MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams'
+# MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
 @dataclass
 class Sentiment:
@@ -53,7 +53,7 @@ class SentimentClassifier:
         negative_batch = [] # would however
 
         for tweet in tweets:
-            analysis = self.analyze(tweet["content"])
+            analysis = self.analyze(tweet)
             sentiment, confidence = analysis["sentiment"], analysis["confidence"]
             if confidence > 0.75:
                 if sentiment == Sentiment.POSITIVE:
@@ -65,7 +65,6 @@ class SentimentClassifier:
                 else:
                     negative_count += 1
                     negative_batch.append(tweet)
-        
         positive_conf = self._calculate_batch_confidence(positive_count,
                                                          negative_count)
         neutral_conf = self._calculate_batch_confidence(neutral_count,

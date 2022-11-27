@@ -1,125 +1,58 @@
-from speech_manager import SpeechManager
 from input_analyzer import InputAnalyzer
 from tweet_snagger import TweetSnagger
-from sentiment_classifier import SentimentClassifier, Sentiment
-from user_profile import UserProfile
-from intents import Intents
+from sentiment_classifier import SentimentClassifier, POSITIVE_SENTIMENT, NEGATIVE_SENTIMENT, NEUTRAL_SENTIMENT
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from response_generation import ResponseGenerator
 
-from random import randrange
+import numpy as np
+import json
 
-speech_manager = SpeechManager()
+app = Flask(__name__)
+CORS(app)
+
 input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
 sentiment_analyzer = SentimentClassifier()
+response_generator = ResponseGenerator()
 
+@app.route("/v1/text", methods=["POST"])
 def main():
     """Integrates systems to allow an end-to-end interaction."""
-    user_profile = None
-    while True:
-        try:
-            # Decide whether to take speech or text input
-            talk_or_text = input('Would you like to SPEAK or TYPE a phrase (or QUIT)? (s/t/q): ')
-            if talk_or_text == 'q':
-                break
-            elif talk_or_text == 's':
-                speech_manager.text_to_speech("What's up big guy?")
-                utterance = speech_manager.speech_to_text()
-            else:
-                utterance = input('Input phrase: ')
-            
-            analysis = input_analyzer.analyze(utterance)
-            # Get intents and entities
-            primary_intent = analysis["primary_intent"]
-            entities = analysis["entities"]
-            # Determine entities/targets
-            entity_words = [entity['word'] for entity in entities]
-            
-            # create new user profile
-            if "profile" in primary_intent and user_profile is None:
-                user_profile = create_profile()
-            # intent is for user's favorite teams or players
-            elif "favorite" in primary_intent and user_profile is not None:
-                entity = None
-                tweets = []
-                if "team" in primary_intent or "teams" in primary_intent:
-                    entity = "team"
-                    team = user_profile.teams[randrange(0, len(user_profile.teams))]
-                    tweets = tweet_snagger.snag_tweets([team], intent=Intents.TRADE, num_tweets=25)
-                    
-                elif "player" in primary_intent or "players" in primary_intent:
-                    entity = "player"
-                    player = user_profile.players[randrange(0, len(user_profile.players))]
-                    tweets = tweet_snagger.snag_tweets([player], intent="other", num_tweets=25)
-                else:
-                    continue
-                
-                analysis = sentiment_analyzer.batch_analysis(tweets)
-
-                if type(analysis) == dict:
-                    speech = "Overall, it seems like "
-                    sentiment = analysis["sentiment"]
-                    adjective = find_adjective(sentiment)
-                    if entity == "team":
-                        speech += f" the {team} team is doing {adjective} lately"
-                    else:
-                        speech += f" {player} has playing {adjective} recently"
-                    
-                    speech_manager.text_to_speech(speech)
-                
-            # either a trade or injury check
-            elif primary_intent != "other":
-                tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=1)
-                # Speech/text output
-                response = tweets[0]['content']
-                print ('Response tweet:', response)
-                # speech_manager.text_to_speech(response)
-            # Deal with unknown intents TODO: Update this, I didn't update with the rest of the file
-            else: 
-                tweets = tweet_snagger.snag_tweets(entity_words, intent="other", num_tweets = 10)
-                output = sentiment_analyzer.batch_analysis(tweets)
-                sentiment, confidence = output["sentiment"], output["confidence"]
-                if sentiment == Sentiment.POSITIVE:
-                    print(entities[0]["word"] + " has a positive sentiment")
-                elif sentiment == Sentiment.NEUTRAL:
-                    print(entities[0]["word"] + " has a neutral sentiment")
-                elif sentiment == Sentiment.NEGATIVE:
-                    print(entities[0]["word"] + " has a negative sentiment")
-
-
+    print(f"Received text request")
+    try:
+        utterance = request.get_json()["query"]
         
-        except Exception as e:
-            print("Exception occurred:", e)
+        print(f"Received utterance: {utterance}")
+        analysis = input_analyzer.analyze(utterance)
+        intents, entities = analysis["intents"], analysis["entities"]
 
+        # Determine primary intent
+        max_score = np.argmax(np.array(intents["scores"]))
+        if intents["scores"][max_score] > 0.6:
+            primary_intent = intents["labels"][max_score]
+        else:
+            #If not condifent then put in NO INTENT (Will just get general tweets)
+            primary_intent = ""
 
-def create_profile() -> UserProfile:
-    """Gathers and analyzes verbal input to make a user profile."""
-    speech_manager.text_to_speech("What's your name?")
-    name = speech_manager.speech_to_text()
-    teams_q = f"Nice to meet you, {name}. Which teams do you support?"
-    speech_manager.text_to_speech(teams_q)
-    teams_input = speech_manager.speech_to_text()
-    teams = [e['word'] for e in input_analyzer.extract_entities(teams_input)]
-    players_q = f"Ah, a {teams[0]} fan I see. Have any favorite players?"
-    speech_manager.text_to_speech(players_q)
-    players_input = speech_manager.speech_to_text()
-    players = [e['word'] for e in input_analyzer.extract_entities(players_input)]
-    speech_manager.text_to_speech("Got it. I've set up your profile!")
-    return UserProfile(name,teams,players)
+        # Determine entities/targets
+        entity_words = [entity['word'] for entity in entities]
 
-def find_adjective(sentiment: str) -> str:
-    """Given a sentiment, returns a fitting adjective."""
-    if sentiment == Sentiment.POSITIVE:
-        random_positive_index = randrange(0, len(Sentiment.POSITIVE_WORDS))
-        return Sentiment.POSITIVE_WORDS[random_positive_index]
-    elif sentiment == Sentiment.NEUTRAL:
-        random_neutral_index = randrange(0, len(Sentiment.NEUTRAL_WORDS))
-        return Sentiment.POSITIVE_WORDS[random_neutral_index]
-    elif sentiment == Sentiment.NEGATIVE:
-        random_negative_index = randrange(0, len(Sentiment.NEGATIVE_WORDS))
-        return Sentiment.POSITIVE_WORDS[random_negative_index]
-    
-    return "A non-real sentiment was passed to find_adjective()"
+        # Deal with known intents
+        tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=50)
 
+        # Get the response
+        response = response_generator.generate_response(utterance, tweets)
+        print (response)
+
+    except Exception as e:
+        print("Exception occurred:", e)
+        return json.dumps({"response": "No one's talking about this, why don't you tweet it?"})
+
+    print(json.dumps({"response": response}))
+    return jsonify({"response": response})
 
 if __name__ == "__main__":
-    main()
+    port = 5000
+    print("Running server on port %d" % port)
+    app.run(port=port, debug=True)

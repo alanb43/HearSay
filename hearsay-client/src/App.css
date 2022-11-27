@@ -1,90 +1,59 @@
 .App {
   text-align: center;
   margin: 0 auto;
-  margin-top: 15%;
   color: white;
   width: 50%;
-}
-
-#title {
-  display: flex;
-  flex-direction: horizontal;
-  margin: 0 auto;
-  width: 40%;
-  margin-bottom: -50px;
-}
-
-#logo {
-  height: 100px;
-  width: 75px;
-  margin-top: 40px;
-}
-
-h1 {
-  font-size: 72px;
-}
-
-h3 {
-  font-size: 16px;
-  margin-bottom: 25px;
-}
-
-#search-bar-section {
-  display: flex;
-  flex-direction: horizontal;
-  margin: 0 auto;
+  list-style-type: none;
+  transition: 400ms;
 }
 
 #search-bar {
   background-color: #3b3b3b;
   border: none;
-  width: 90%;
+  width: 100%;
   height: 50px;
-  margin: 0 auto;
+  padding: 0 64px 0 16px;
   border-radius: 5px;
   color: rgb(230, 230, 230);
   font-size: 18px;
-  padding: 0px 0px 0px 15px;
-  box-shadow:  16px 16px 48px #161616,
-  -16px -16px 48px #424242;
+  box-shadow: 16px 16px 48px #161616, -16px -16px 48px #424242;
 }
 
 #search-bar:hover {
   transition: all 0.5s;
-  cursor: pointer;
   background-color: rgb(65, 64, 64);
   box-shadow:  24px 24px 48px #202020,
   -24px -24px 48px #424242;
 }
 
 #mic-button {
-  background-color: white;
-  width: 50px;
-  height: 50px;
-  border-radius: 50px;
-  box-shadow: -1px 9px 8px 3px rgba(25,25,25,0.75);
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
+  border-radius: 40px;
+  position: absolute;
+  filter: invert(50%);
+  margin-top: 5px;
 }
 
 #mic-button:hover {
   transition: all .5s;
   cursor: pointer;
-  background-color: rgb(247, 188, 188);
-  box-shadow: -1px 9px 8px 3px rgba(46, 46, 46, 0.75);
-
+  filter: invert(100%);
 }
 
 #mic-button:active {
-  transition: all .5s;
-  background-color: rgb(245, 83, 83);
+  transition: all .1s;
+  background-color: rgba(0, 0, 0, 0.1);
   box-shadow: -1px 18px 57px -23px rgba(176,174,174,0.75);
   -webkit-box-shadow: -1px 18px 57px -23px rgba(176,174,174,0.75);
   -moz-box-shadow: -1px 18px 57px -23px rgba(176,174,174,0.75);
 }
 
 #mic-img {
-  height: 35px;
-  width: 35px;
-  padding-top: 7.5px;
+  height: 30px;
+  width: 30px;
+  margin: auto;
 }
 
 #submit-button {
@@ -105,32 +74,68 @@ h3 {
   transition: all 0.25s; 
   cursor: pointer;
   background-color: rgb(196, 196, 196);
-  width: 125px;
-  height: 55px;
-  box-shadow:  17px 17px 46px #242424,
-  -17px -17px 46px #464646;
+  box-shadow:  17px 17px 46px #242424, -17px -17px 46px #464646;
 }
 
 #submit-button:active {
   background-color: rgb(119, 119, 119);
-
 }
 
-#responseDiv {
+#conversation {
+  list-style-type: none;
   margin: 0 auto;
-  margin-top: 35px;
-  width: 95%;
-  background-color: #296996;
-  color: white;
-  font-size: 18px;
-  border-radius: 10px;
-  min-height: 50px;
-  text-align: center;
-  box-shadow: 1px 7px 12px 0px rgba(28,28,28,0.75);
-  -webkit-box-shadow: 1px 7px 12px 0px rgba(28,28,28,0.75);
-  -moz-box-shadow: 1px 7px 12px 0px rgba(28,28,28,0.75);
+  padding: 0;
+  position: relative;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
-#response {
-  line-height: 50px;
+.chat-bubble-container + .chat-bubble-container {
+  margin-top: 16px;
+}
+
+.chat-bubble {
+  padding: 8px 12px;
+  border-radius: 15px;
+  margin-bottom: -10px;
+  min-height: 20px;
+  max-width: 450px;
+  text-align: left;
+}
+
+.dot-typing {
+  position: relative;
+  left: -9999px;
+  width: 7px;
+  height: 7px;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #fff;
+  box-shadow: 9984px 0 0 0 #fff, 9999px 0 0 0 #fff, 10014px 0 0 0 #fff;
+  animation: dotTyping 1.5s infinite linear;
+}
+
+@keyframes dotTyping {
+  0% {
+    box-shadow: 9984px 0 0 0 #fff, 9999px 0 0 0 #fff, 10014px 0 0 0 #fff;
+  }
+  16.667% {
+    box-shadow: 9984px -10px 0 0 #fff, 9999px 0 0 0 #fff, 10014px 0 0 0 #fff;
+  }
+  33.333% {
+    box-shadow: 9984px 0 0 0 #fff, 9999px 0 0 0 #fff, 10014px 0 0 0 #fff;
+  }
+  50% {
+    box-shadow: 9984px 0 0 0 #fff, 9999px -10px 0 0 #fff, 10014px 0 0 0 #fff;
+  }
+  66.667% {
+    box-shadow: 9984px 0 0 0 #fff, 9999px 0 0 0 #fff, 10014px 0 0 0 #fff;
+  }
+  83.333% {
+    box-shadow: 9984px 0 0 0 #fff, 9999px 0 0 0 #fff, 10014px -10px 0 0 #fff;
+  }
+  100% {
+    box-shadow: 9984px 0 0 0 #fff, 9999px 0 0 0 #fff, 10014px 0 0 0 #fff;
+  }
 }
