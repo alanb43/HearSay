@@ -13,5 +13,6 @@ pyttsx3 # text to speech
 transformers==4.24.0
 snscrape
 pandas
+google-search-results
 flask
 flask_cors
