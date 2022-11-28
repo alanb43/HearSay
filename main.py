@@ -14,7 +14,7 @@ input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
 sentiment_analyzer = SentimentClassifier()
 response_generator = ResponseGenerator()
-profile_manager = ProfileManager(input_analyzer, sentiment_analyzer, tweet_snagger)
+profile_manager = ProfileManager(input_analyzer, sentiment_analyzer, tweet_snagger, response_generator)
 # First requestion breaks for some reason, so warming it up
 response_generator.generate_response("null", [{"content":"null"}])
 

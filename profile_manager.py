@@ -5,12 +5,12 @@ from random import randrange
 
 class ProfileManager:
     """Manages everything for user profiles."""
-    
-    def __init__(self, input_analyzer, sentiment_classifier, tweet_snagger):
+    def __init__(self, input_analyzer, sentiment_classifier, tweet_snagger, response_gen):
         self.input_analyzer = input_analyzer
         self.sentiment_classifier = sentiment_classifier
         self.tweet_snagger = tweet_snagger
         self.profile : UserProfile = None
+        self.response_gen = response_gen
         self.reset_profile()
 
     def profile_exists(self) -> bool:
@@ -58,10 +58,12 @@ class ProfileManager:
         tweets = [tweet['content'] for tweet in tweet_objects]
         sentiment = self.sentiment_classifier.batch_analysis(tweets)["sentiment"]
         adjective = find_adjective(sentiment)
+        data = self.response_gen.summarize_text(tweets)[0]["summary_text"]
         speech = "Overall, it seems like "
         if teams:
-            speech += f" the {choice} team is doing {adjective} lately"
+            speech += f" the {choice} team is doing {adjective} lately."
         else:
-            speech += f" {choice} has been playing {adjective} recently"
+            speech += f" {choice} has been playing {adjective} recently."
         
+        speech += f" Here's a quick summary: {data}"
         return speech

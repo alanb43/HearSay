@@ -1,7 +1,6 @@
 from transformers import pipeline
 
 class Summarizer:
-
     def __init__(self):
         self.model = pipeline("summarization", model="knkarthick/MEETING_SUMMARY")
 

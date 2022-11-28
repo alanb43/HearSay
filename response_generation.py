@@ -17,7 +17,7 @@ class ResponseGenerator:
         raw_tweets = [x['content'] for x in tweets]
         relevant_tweets = self.__get_relevant_tweets(question, raw_tweets)
         answer = self.__get_question_answer(question, '\n'.join(relevant_tweets)).replace('\n', '')
-        summary = self.__summarize_text(relevant_tweets)[0]['summary_text'].replace('\n', '')
+        summary = self.summarize_text(relevant_tweets)[0]['summary_text'].replace('\n', '')
         sentiment = self.__get_sentiment_analysis(relevant_tweets)
         most_relevant_tweet = relevant_tweets[0].replace('\n', '')
         response = f'''
@@ -28,10 +28,10 @@ class ResponseGenerator:
         '''
         return response
 
-    def __summarize_text(self, text_input: List[str]) -> str:
+    def summarize_text(self, text_input: list[str]) -> str:
         return self.summarizer.summarize_tweets(text_input)
 
-    def __get_relevant_tweets(self, question: str, tweets_input: List[str]) -> List[str]:
+    def __get_relevant_tweets(self, question: str, tweets_input: list[str]) -> list[str]:
         return self.relevancy_analyzer.get_most_relevant_tweets(tweets_input, question, min(10, len(tweets_input)))
 
     def __get_question_answer(self, question: str, context: str) -> str:
