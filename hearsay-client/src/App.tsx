@@ -184,12 +184,12 @@ const App: React.FC = () => {
           height: 40,
           marginTop: 20,
           fontSize: 16,
-          position: 'absolute',
+          position: 'fixed',
           right: 25,
           bottom: 25
         }}
       >
-        { useTTS ? 'Mute' : 'Unmute' }
+        {useTTS ? 'Mute' : 'Unmute'}
       </button>
     </div>
   );
