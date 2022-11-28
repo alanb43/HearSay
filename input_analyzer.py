@@ -61,9 +61,8 @@ class InputAnalyzer:
         Here for intent people to write, unless unnecessary
         """
         intent_dict = self.__intent_classifier.classify_intent(subject)
-        primary_intent = "other" # default
+        primary_intent = "" # default
         max_score = np.argmax(np.array(intent_dict["scores"]))
-        if intent_dict["scores"][max_score] > 0.3:
+        if intent_dict["scores"][max_score] > 0.6:
             primary_intent = intent_dict["labels"][max_score]
-        
         return primary_intent

@@ -15,6 +15,8 @@ input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
 sentiment_analyzer = SentimentClassifier()
 response_generator = ResponseGenerator()
+# First requestion breaks for some reason, so warming it up
+response_generator.generate_response("null", [{"content":"null"}])
 
 @app.route("/v1/text", methods=["POST"])
 def main():
@@ -28,8 +30,7 @@ def main():
         primary_intent, entities = analysis["primary_intent"], analysis["entities"]
         entity_words = [entity['word'] for entity in entities]
         tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=50)
-        # response = response_generator.generate_response(utterance, tweets)
-        response = ""
+        response = response_generator.generate_response(utterance, tweets)
         print(response)
 
 

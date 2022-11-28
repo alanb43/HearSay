@@ -13,7 +13,7 @@ class ResponseGenerator:
         self.summarizer = Summarizer()
         self.sentiment_classifier = SentimentClassifier()
 
-    def generate_response(self, question: str, tweets: List[str]) -> str:
+    def generate_response(self, question: str, tweets: List) -> str:
         raw_tweets = [x['content'] for x in tweets]
         relevant_tweets = self.__get_relevant_tweets(question, raw_tweets)
         answer = self.__get_question_answer(question, '\n'.join(relevant_tweets)).replace('\n', '')
