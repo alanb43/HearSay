@@ -23,7 +23,8 @@ def generate_response(utterance: str) -> str:
     try:
         print(f"Received utterance: {utterance}")
         analysis = input_analyzer.analyze(utterance)
-        primary_intent, entities = analysis["primary_intent"], analysis["entities"]        
+        primary_intent, entities = analysis["primary_intent"], analysis["entities"]
+        print(primary_intent)        
         # if user is in process of creating a profile
         if profile_manager.create_profile_state.engaged:
             response = profile_manager.build_profile(utterance)
@@ -32,7 +33,7 @@ def generate_response(utterance: str) -> str:
             profile_manager.create_profile_state.engaged = True
             response = "What's your name?"
         # profiled user checking on their favorite teams or player
-        elif "favorite" in primary_intent:
+        elif "favorite" in utterance:
             if not profile_manager.profile_exists():
                 response = "You haven't set up a profile!"
             elif primary_intent == Intents.FAV_TEAMS:

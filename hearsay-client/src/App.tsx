@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [query, setQuery] = useState<string>('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [awaitingResponse, setAwaitingResponse] = useState(false);
+  const [useTTS, setUseTTS] = useState(true);
 
   function addMessage(side: 'left' | 'right', text: string) {
     const message: ChatMessage = { side, text };
@@ -32,6 +33,8 @@ const App: React.FC = () => {
     browserSupportsSpeechRecognition
   } = useSpeechRecognition();
 
+  const tts = useCallback((text: string) => (window as any).speechSynthesis.speak(new SpeechSynthesisUtterance(text)), []);
+
   if (!browserSupportsSpeechRecognition) {
     console.warn('Browser does not support speech recognition');
   }
@@ -45,11 +48,13 @@ const App: React.FC = () => {
     axios.post(url, { "query": query })
       .then((response) => {
         setAwaitingResponse(false);
-        addBotMessage(response.data["response"]);
+        const text = response.data["response"];
+        if (useTTS) tts(text);
+        addBotMessage(text);
       })
       .catch(console.error);
     setQuery('');
-  }, [addBotMessage, addUserMessage]);
+  }, [useTTS, tts, addBotMessage, addUserMessage]);
 
   const onSubmit = () => {
     sendQuery(query);
@@ -169,6 +174,23 @@ const App: React.FC = () => {
         </div>
         <button id="submit-button" onClick={onSubmit}>Submit</button>
       </div>
+      {/* TTS mute/unmute button */}
+      <button
+        type="button"
+        onClick={() => setUseTTS(!useTTS)}
+        style={{
+          backgroundColor: 'rgb(160, 220, 255)',
+          width: 120,
+          height: 40,
+          marginTop: 20,
+          fontSize: 16,
+          position: 'absolute',
+          right: 25,
+          bottom: 25
+        }}
+      >
+        { useTTS ? 'Mute' : 'Unmute' }
+      </button>
     </div>
   );
 };

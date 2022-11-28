@@ -56,12 +56,9 @@
   margin: auto;
 }
 
-#submit-button {
-  height: 50px;
-  width: 120px;
+button {
   color: #2C2C2C;
   background-color: rgb(224, 224, 224);
-  margin-top: 25px;
   border: none;
   border-radius: 15px;
   box-shadow:  17px 17px 46px #121212,
@@ -70,15 +67,21 @@
   font-weight: bold;
 }
 
-#submit-button:hover {
+button:hover {
   transition: all 0.25s; 
   cursor: pointer;
   background-color: rgb(196, 196, 196);
   box-shadow:  17px 17px 46px #242424, -17px -17px 46px #464646;
 }
 
-#submit-button:active {
+button:active {
   background-color: rgb(119, 119, 119);
+}
+
+#submit-button {
+  height: 50px;
+  width: 120px;
+  margin-top: 25px;
 }
 
 #conversation {
