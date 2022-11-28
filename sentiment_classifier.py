@@ -84,18 +84,16 @@ class SentimentClassifier:
         x = count1/others
         return 1 - 1/(1+0.8*x)
 
-    def find_adjective(sentiment: str) -> str:
-        """Given a sentiment, returns a fitting adjective."""
-        if sentiment == Sentiment.POSITIVE:
-            random_positive_index = randrange(0, len(Sentiment.POSITIVE_WORDS))
-            return Sentiment.POSITIVE_WORDS[random_positive_index]
-        elif sentiment == Sentiment.NEUTRAL:
-            random_neutral_index = randrange(0, len(Sentiment.NEUTRAL_WORDS))
-            return Sentiment.POSITIVE_WORDS[random_neutral_index]
-        elif sentiment == Sentiment.NEGATIVE:
-            random_negative_index = randrange(0, len(Sentiment.NEGATIVE_WORDS))
-            return Sentiment.POSITIVE_WORDS[random_negative_index]
-    
-        return "A non-real sentiment was passed to find_adjective()"
+def find_adjective(sentiment: str) -> str:
+    """Given a sentiment, returns a fitting adjective."""
+    if sentiment == Sentiment.POSITIVE:
+        random_positive_index = randrange(0, len(Sentiment.POSITIVE_WORDS))
+        return Sentiment.POSITIVE_WORDS[random_positive_index]
+    elif sentiment == Sentiment.NEUTRAL:
+        random_neutral_index = randrange(0, len(Sentiment.NEUTRAL_WORDS))
+        return Sentiment.POSITIVE_WORDS[random_neutral_index]
+    elif sentiment == Sentiment.NEGATIVE:
+        random_negative_index = randrange(0, len(Sentiment.NEGATIVE_WORDS))
+        return Sentiment.POSITIVE_WORDS[random_negative_index]
 
-sentiment_classifier = SentimentClassifier()
+    return "A non-real sentiment was passed to find_adjective()"

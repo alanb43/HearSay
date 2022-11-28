@@ -1,55 +1,67 @@
-from data_classes.user_profile import UserProfile
+from data_classes.user_profile import UserProfile, ProfileSetupState
+from sentiment_classifier import find_adjective
 
 from random import randrange
 
 class ProfileManager:
     """Manages everything for user profiles."""
     
-    def __init__(self, speech_manager, input_analyzer, 
-                 sentiment_classifier, tweet_snagger):
-        self.speech_manager = speech_manager
+    def __init__(self, input_analyzer, sentiment_classifier, tweet_snagger):
         self.input_analyzer = input_analyzer
         self.sentiment_classifier = sentiment_classifier
         self.tweet_snagger = tweet_snagger
         self.profile : UserProfile = None
+        self.reset_profile()
 
-    def create_profile(self) -> UserProfile:
-        """Gathers and analyzes verbal input to make a user profile."""
-        self.speech_manager.text_to_speech("What's your name?")
-        name = self.speech_manager.speech_to_text()
-        teams_q = f"Nice to meet you, {name}. Which teams do you support?"
-        self.speech_manager.text_to_speech(teams_q)
-        teams_input = self.speech_manager.speech_to_text()
-        teams = [e['word'] for e in self.input_analyzer.extract_entities(teams_input)]
-        players_q = f"Ah, a {teams[0]} fan I see. Have any favorite players?"
-        self.speech_manager.text_to_speech(players_q)
-        players_input = self.speech_manager.speech_to_text()
-        players = [e['word'] for e in self.input_analyzer.extract_entities(players_input)]
-        self.speech_manager.text_to_speech("Got it. I've set up your profile!")
-        self.profile = UserProfile(name,teams,players)
+    def profile_exists(self) -> bool:
+        """Returns whether a profile has been set up."""
+        return self.profile is not None
+
+    def reset_profile(self) -> None:
+        """Resets profile and profile setup state."""
+        self.create_profile_state = ProfileSetupState(False, "", "", "")
+
+    def build_profile(self, utterance):
+        """Uses data aggregated from back-end to construct UserProfile."""
+        response = ""
+        if self.create_profile_state.name == "":
+            name: str = self.input_analyzer.extract_entities(utterance)[0]["word"].title()
+            self.create_profile_state.name = name
+            response = f"Nice to meet you, {name}. Which teams do you support?"
+        elif len(self.create_profile_state.teams) == 0:
+            teams = [str(e['word']).title() for e in self.input_analyzer.extract_entities(utterance)]
+            self.create_profile_state.teams = teams
+            response = f"Ah, a {teams[0]} fan I see. Have any favorite players?"
+        elif len(self.create_profile_state.players) == 0:
+            players = [e['word'] for e in self.input_analyzer.extract_entities(utterance)]
+            self.create_profile_state.players = players
+            self.profile = UserProfile(
+                user=self.create_profile_state.name,
+                teams=self.create_profile_state.teams,
+                players=self.create_profile_state.players
+            )
+            self.create_profile_state.engaged = False
+            response =  "Got it. I've set up your profile!"
+        
+        return response
     
     def get_info_about_favorites(self, teams: bool):
+        choice = ""
         if teams:
             team_choice = randrange(0, len(self.profile.teams))
-            team = self.profile.teams[team_choice]
-            tweets = self.tweet_snagger.snag_tweets([team], intent="other", num_tweets=15)
-            
+            choice = self.profile.teams[team_choice]
         else:
             player_choice = randrange(0, len(self.profile.players))
-            player = self.profile.players[player_choice]
-            tweets = self.tweet_snagger.snag_tweets([player], intent="other", num_tweets=15)
-
-        analysis = self.sentiment_classifier.batch_analysis(tweets)
-
-        if type(analysis) != dict:
-            return ""
-            
+            choice = self.profile.players[player_choice]
+        
+        tweet_objects = self.tweet_snagger.snag_tweets([choice], intent="other", num_tweets=15)
+        tweets = [tweet['content'] for tweet in tweet_objects]
+        sentiment = self.sentiment_classifier.batch_analysis(tweets)["sentiment"]
+        adjective = find_adjective(sentiment)
         speech = "Overall, it seems like "
-        sentiment = analysis["sentiment"]
-        adjective = self.sentiment_classifier.find_adjective(sentiment)
-        if team:
-            speech += f" the {team} team is doing {adjective} lately"
+        if teams:
+            speech += f" the {choice} team is doing {adjective} lately"
         else:
-            speech += f" {player} has playing {adjective} recently"
+            speech += f" {choice} has been playing {adjective} recently"
         
         return speech

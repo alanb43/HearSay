@@ -6,3 +6,11 @@ class UserProfile:
     user: str
     teams: list
     players: list
+
+@dataclass
+class ProfileSetupState:
+    """State for profile creation process."""
+    engaged: bool
+    name: str
+    teams: list
+    players: list

@@ -8,13 +8,7 @@ const textRoute: string = "/v1/text"
 
 interface ChatMessage {
   side: 'left' | 'right';
-  text: string;
-}
-
-interface CreateProfileRequest {
-  name: string,
-  teams: string,
-  players: string
+  text?: string;
 }
 
 const App: React.FC = () => {
@@ -111,7 +105,7 @@ const App: React.FC = () => {
       >
         <div className="chat-bubble" style={{ backgroundColor: props.side === 'left' ? blue : green }}>
           {
-            (props.text == null || props.text === '')
+            props.text == null
               ? (
                 <div style={{ margin: '0 16px' }}>
                   <div className="dot-typing" style={{ margin: '0 auto', bottom: '-7px' }} />
@@ -150,7 +144,7 @@ const App: React.FC = () => {
         ))}
         {
           awaitingResponse &&
-          <ChatBubble side="left" text="" />
+          <ChatBubble side="left" />
         }
         {
           transcript !== '' &&
