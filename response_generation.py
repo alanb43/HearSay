@@ -1,6 +1,7 @@
 from transformers import pipeline
 from relevancy_analyzer import RelevancyAnalyzer
 from summarizer import Summarizer
+from sentiment_classifier import SentimentClassifier
 from typing import List
 from openai_client import OpenAIClient
 from config import OPENAI_API_KEY
@@ -13,12 +14,27 @@ class ResponseGenerator:
     """Generates Response using question and context given by tweets"""
 
     def __init__(self, model_name = "deepset/roberta-base-squad2"):
-        # self.relevancy_analyzer = RelevancyAnalyzer()
-        # self.qa_model = pipeline('question-answering', model=model_name, tokenizer=model_name)
-        # self.summarizer = Summarizer()
-        pass
+        self.relevancy_analyzer = RelevancyAnalyzer()
+        self.qa_model = pipeline('question-answering', model=model_name, tokenizer=model_name)
+        self.summarizer = Summarizer()
+        self.sentiment_classifier = SentimentClassifier()
 
     def generate_response(self, question: str, tweets: List[str]) -> str:
+        raw_tweets = [x['content'] for x in tweets]
+        relevant_tweets = self.__get_relevant_tweets(question, raw_tweets)
+        answer = self.__get_question_answer(question, '\n'.join(relevant_tweets)).replace('\n', '')
+        summary = self.__summarize_text(relevant_tweets)[0]['summary_text'].replace('\n', '')
+        sentiment = self.__get_sentiment_analysis(relevant_tweets)
+        most_relevant_tweet = relevant_tweets[0].replace('\n', '')
+        response = f'''
+        {summary}
+        The overall sentiment is {sentiment['sentiment']}.
+        The Short answer is "{answer}".
+        The most relevant tweet is "{most_relevant_tweet}"
+        '''
+        return response
+    
+    def generate_gpt3_response(self, question: str, tweets: list[str]):
         return openai_client.query(f"Tweets:{NL}{NL.join(tweets)}{NL}Your question: {question}. Based on what people are saying on Twitter, my answer is:")
 
     def __summarize_text(self, text_input: List[str]) -> str:
@@ -34,5 +50,8 @@ class ResponseGenerator:
         }
         return self.qa_model(qa_input)['answer']
 
-    def __get_sentiment_analysis(self, tweets_input: List[str]) -> str:
-        return "Sentiment"
+    def __get_sentiment_analysis(self, tweets_input: List[str]):
+        sentiment = self.sentiment_classifier.batch_analysis(tweets_input)
+        if isinstance(sentiment, str):
+            return {'sentiment': 'null', 'confidence': 'null'}
+        return sentiment

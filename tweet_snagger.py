@@ -1,6 +1,6 @@
 import snscrape.modules.twitter as twitter
 from intent_classifier import IntentClassifier
-from intent import INTENTS
+from data_classes.intents import INTENTS
 
 class TweetSnagger:
     """Snags sports tweets from Twitter."""
@@ -78,3 +78,5 @@ class TweetSnagger:
             query += '-filter:retweets'
         
         return query
+
+tweet_snagger = TweetSnagger()

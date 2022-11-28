@@ -1,13 +1,10 @@
 from transformers import pipeline
-from tweet_snagger import TweetSnagger
-import math
-# Switch between the two if model doesn't work
-MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams'
-# MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+from data_classes.sentiment import Sentiment
+from random import randrange
 
-POSITIVE_SENTIMENT = "Positive"
-NEUTRAL_SENTIMENT = "Neutral"
-NEGATIVE_SENTIMENT = "Negative"
+# Switch between the two if model doesn't work
+# MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams'
+MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
 class SentimentClassifier:
     """
@@ -41,19 +38,18 @@ class SentimentClassifier:
         negative_batch = [] # would however
 
         for tweet in tweets:
-            analysis = self.analyze(tweet["content"])
+            analysis = self.analyze(tweet)
             sentiment, confidence = analysis["sentiment"], analysis["confidence"]
             if confidence > 0.75:
-                if sentiment == POSITIVE_SENTIMENT:
+                if sentiment == Sentiment.POSITIVE:
                     positive_count += 1
                     positive_batch.append(tweet)
-                elif sentiment == NEUTRAL_SENTIMENT:
+                elif sentiment == Sentiment.NEUTRAL:
                     neutral_count += 1
                     neutral_batch.append(tweet)
                 else:
                     negative_count += 1
                     negative_batch.append(tweet)
-        
         positive_conf = self._calculate_batch_confidence(positive_count,
                                                          negative_count)
         neutral_conf = self._calculate_batch_confidence(neutral_count,
@@ -68,11 +64,11 @@ class SentimentClassifier:
         
         data = {"sentiment": "", "confidence": best_result}
         if best_result == positive_conf:
-            data["sentiment"] = POSITIVE_SENTIMENT
+            data["sentiment"] = Sentiment.POSITIVE
         elif best_result == neutral_conf:
-            data["sentiment"] = NEUTRAL_SENTIMENT
+            data["sentiment"] = Sentiment.NEUTRAL
         else:
-            data["sentiment"] = NEGATIVE_SENTIMENT
+            data["sentiment"] = Sentiment.NEGATIVE
 
         return data
 
@@ -87,3 +83,19 @@ class SentimentClassifier:
         others = count2 + count3 + 0.0001
         x = count1/others
         return 1 - 1/(1+0.8*x)
+
+    def find_adjective(sentiment: str) -> str:
+        """Given a sentiment, returns a fitting adjective."""
+        if sentiment == Sentiment.POSITIVE:
+            random_positive_index = randrange(0, len(Sentiment.POSITIVE_WORDS))
+            return Sentiment.POSITIVE_WORDS[random_positive_index]
+        elif sentiment == Sentiment.NEUTRAL:
+            random_neutral_index = randrange(0, len(Sentiment.NEUTRAL_WORDS))
+            return Sentiment.POSITIVE_WORDS[random_neutral_index]
+        elif sentiment == Sentiment.NEGATIVE:
+            random_negative_index = randrange(0, len(Sentiment.NEGATIVE_WORDS))
+            return Sentiment.POSITIVE_WORDS[random_negative_index]
+    
+        return "A non-real sentiment was passed to find_adjective()"
+
+sentiment_classifier = SentimentClassifier()

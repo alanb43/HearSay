@@ -1,7 +1,7 @@
 SpeechRecognition
 torch
-tensorflow==2.9.0
-keras==2.9.0
+# tensorflow==2.9.0
+keras==2.10.0
 google-cloud-speech
 # for linux / debian, install pyaudio with the following command:
 # sudo apt-get install python-pyaudio python3-pyaudio
@@ -13,6 +13,7 @@ pyttsx3 # text to speech
 transformers==4.24.0
 snscrape
 pandas
+google-search-results
 flask
 flask_cors
 openai
