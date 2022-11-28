@@ -4,6 +4,7 @@ from sentiment_classifier import SentimentClassifier
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from response_generation import ResponseGenerator
+from profile_manager import ProfileManager
 
 import numpy as np
 import json
@@ -15,8 +16,15 @@ input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
 sentiment_analyzer = SentimentClassifier()
 response_generator = ResponseGenerator()
+#profile_manager = ProfileManager(input_analyzer, sentiment_analyzer, tweet_snagger)
 # First requestion breaks for some reason, so warming it up
 response_generator.generate_response("null", [{"content":"null"}])
+
+@app.route("/v1/create", methods=["POST"])
+def create_profile():
+    data = request.get_json()
+    name_, teams_, players_ = data["name"], data["teams"], data["players"]
+    #profile_manager.create_profile(name_, teams_, players_)
 
 @app.route("/v1/text", methods=["POST"])
 def main():

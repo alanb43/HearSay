@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
@@ -9,6 +9,12 @@ const textRoute: string = "/v1/text"
 interface ChatMessage {
   side: 'left' | 'right';
   text: string;
+}
+
+interface CreateProfileRequest {
+  name: string,
+  teams: string,
+  players: string
 }
 
 const App: React.FC = () => {
@@ -38,6 +44,7 @@ const App: React.FC = () => {
 
   const sendQuery = useCallback((query: string) => {
     // call backend - generate response and display on page
+    console.log(`Sending query ${query}`);
     addUserMessage(query);
     let url = `${endpoint}${textRoute}`;
     setAwaitingResponse(true);
@@ -54,22 +61,41 @@ const App: React.FC = () => {
     sendQuery(query);
   };
 
-  // handle transition from listening to not listening
-  const [transitionHandled, setTransitionHandled] = useState(true);
+  // handle transitions from listening states
+  const lastListening = useRef(false);
+  const onStopListening = useRef<(transcript: string) => void>();
+  useEffect(() => {
+    if (listening !== lastListening.current) {
+      lastListening.current = listening;
+      // handle listening changed event
+      if (!listening) {
+        if (onStopListening.current != null) onStopListening.current(transcript);
+        onStopListening.current = undefined;
+      }
+    }
+  })
 
-  const onMicClick = () => {
+  function getSpeechToText(): Promise<string> {
+    if (onStopListening.current) {
+      console.warn("Attempting to double-listen");
+      throw new Error();
+    }
     resetTranscript();
     SpeechRecognition.startListening();
-    setTimeout(() => setTransitionHandled(false), 400);
-  };
+    return new Promise((res) => {
+      setTimeout(() => {
+        onStopListening.current = (transcript: string) => {
+          let text = transcript;
+          resetTranscript();
+          res(text);
+        }
+      }, 400);
+    });
+  }
 
-  useEffect(() => {
-    if (!listening && !transitionHandled) {
-      setTransitionHandled(true);
-      sendQuery(transcript);
-      resetTranscript();
-    }
-  }, [listening, transitionHandled, sendQuery, transcript, resetTranscript]);
+  const onMicClick = async () => {
+    sendQuery(await getSpeechToText());
+  };
 
   function ChatBubble(props: ChatMessage) {
     const green = 'rgb(81, 156, 106)';
