@@ -25,25 +25,13 @@ def main():
         
         print(f"Received utterance: {utterance}")
         analysis = input_analyzer.analyze(utterance)
-        intents, entities = analysis["intents"], analysis["entities"]
-
-        # Determine primary intent
-        max_score = np.argmax(np.array(intents["scores"]))
-        if intents["scores"][max_score] > 0.6:
-            primary_intent = intents["labels"][max_score]
-        else:
-            #If not condifent then put in NO INTENT (Will just get general tweets)
-            primary_intent = ""
-
-        # Determine entities/targets
+        primary_intent, entities = analysis["primary_intent"], analysis["entities"]
         entity_words = [entity['word'] for entity in entities]
-
-        # Deal with known intents
         tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=50)
+        # response = response_generator.generate_response(utterance, tweets)
+        response = ""
+        print(response)
 
-        # Get the response
-        response = response_generator.generate_response(utterance, tweets)
-        print (response)
 
     except Exception as e:
         print("Exception occurred:", e)
