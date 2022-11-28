@@ -1,6 +1,6 @@
 import openai
 
-ENGINE = 'curie'
+MODEL = "text-curie-001"
 
 NL = '\n'
 
@@ -12,7 +12,11 @@ class OpenAIClient:
 
     def player_has_injury(self, player: str, tweet: str) -> bool:
         prompt = f"Sentiment Analyzer (Yes/No).{NL}{tweet}{NL}Does {player} have an injury: "
-        completion = openai.Completion.create(engine=ENGINE, prompt=prompt)
+        completion = openai.Completion.create(
+            model=MODEL,
+            prompt=prompt,
+            temperature=0.7
+        )
         print(completion)
         text: str = completion.choices[0].text
         print('Prompt:', '^', prompt, '$')
@@ -20,5 +24,12 @@ class OpenAIClient:
         return text.lower().find('yes') != -1
     
     def query(self, prompt: str) -> str:
-        completion = openai.Completion.create(engine=ENGINE, prompt=prompt)
+        print(f"prompt: {prompt}")
+        completion = openai.Completion.create(
+            model=MODEL,
+            prompt=prompt,
+            temperature=0.7,
+            max_tokens=128
+        )
+        print(completion)
         return completion.choices[0].text

@@ -8,7 +8,7 @@ const textRoute: string = "/v1/text"
 
 interface ChatMessage {
   side: 'left' | 'right';
-  text: string;
+  text?: string;
 }
 
 const App: React.FC = () => {
@@ -44,7 +44,9 @@ const App: React.FC = () => {
     axios.post(url, { "query": query })
       .then((response) => {
         setAwaitingResponse(false);
-        addBotMessage(response.data["response"]);
+        let text = response.data["response"];
+        text = text !== '' ? text : "I don't have an answer for that.";
+        addBotMessage(text);
       })
       .catch(console.error);
     setQuery('');
@@ -85,7 +87,7 @@ const App: React.FC = () => {
       >
         <div className="chat-bubble" style={{ backgroundColor: props.side === 'left' ? blue : green }}>
           {
-            (props.text == null || props.text === '')
+            props.text == null
               ? (
                 <div style={{ margin: '0 16px' }}>
                   <div className="dot-typing" style={{ margin: '0 auto', bottom: '-7px' }} />
@@ -124,7 +126,7 @@ const App: React.FC = () => {
         ))}
         {
           awaitingResponse &&
-          <ChatBubble side="left" text="" />
+          <ChatBubble side="left" />
         }
         {
           transcript !== '' &&
@@ -142,6 +144,7 @@ const App: React.FC = () => {
             onChange={e => setQuery(e.target.value)}
             onSubmit={onSubmit}
             onKeyPress={(e) => e.key === 'Enter' ? onSubmit() : null}
+            disabled={awaitingResponse}
           />
           <div id="mic-button" onClick={onMicClick}>
             <img id="mic-img" src="mic.png" alt="" />
