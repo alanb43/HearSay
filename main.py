@@ -46,6 +46,11 @@ def generate_response(utterance: str) -> str:
                 response = "I didn't capture that, would you mind trying again?"
                 return response
             
+            if "injured" in utterance:
+                primary_intent = Intents.INJURY
+            elif "trade" in utterance:
+                primary_intent = Intents.TRADE
+
             entity_words = [entity['word'] for entity in entities]
             tweets = tweet_snagger.snag_tweets(topics=entity_words, intent=primary_intent, num_tweets=50)
             response = response_generator.generate_response(utterance, tweets)
