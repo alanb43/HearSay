@@ -1,4 +1,4 @@
-from user_profile import UserProfile
+from data_classes.user_profile import UserProfile
 
 from random import randrange
 

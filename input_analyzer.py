@@ -6,7 +6,7 @@ To use, it's required that you:
 
 from entity_classifier import EntityClassifier
 from intent_classifier import IntentClassifier
-from intents import INTENTS
+from data_classes.intents import INTENTS
 
 import numpy as np
 

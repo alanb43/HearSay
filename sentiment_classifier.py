@@ -1,25 +1,10 @@
 from transformers import pipeline
-from dataclasses import dataclass
+from data_classes.sentiment import Sentiment
 from random import randrange
 
 # Switch between the two if model doesn't work
-MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams'
-# MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
-
-@dataclass
-class Sentiment:
-    """
-    Sentiment class here to simplify imports 
-    (just import this class instead of a ton of constant variables.
-    """
-    # don't touch
-    POSITIVE = "Positive"
-    NEUTRAL = "Neutral"
-    NEGATIVE = "Negative"
-    # add if you feel necessary
-    POSITIVE_WORDS = ["good", "pretty good", "solid", "great"]
-    NEUTRAL_WORDS = ["alright", "okay", "decent", "kind of mid"]
-    NEGATIVE_WORDS = ["poorly", "bad", "not good", "nothing right"]
+# MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams'
+MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
 class SentimentClassifier:
     """
