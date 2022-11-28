@@ -1,5 +1,6 @@
 from data_classes.user_profile import UserProfile, ProfileSetupState
 from sentiment_classifier import find_adjective
+from result_finder import get_recent_result
 
 from random import randrange
 
@@ -54,16 +55,19 @@ class ProfileManager:
             player_choice = randrange(0, len(self.profile.players))
             choice = self.profile.players[player_choice]
         
-        tweet_objects = self.tweet_snagger.snag_tweets([choice], intent="other", num_tweets=15)
+        tweet_objects = self.tweet_snagger.snag_tweets([choice], intent="", num_tweets=15)
         tweets = [tweet['content'] for tweet in tweet_objects]
         sentiment = self.sentiment_classifier.batch_analysis(tweets)["sentiment"]
         adjective = find_adjective(sentiment)
         data = self.response_gen.summarize_text(tweets)[0]["summary_text"]
         speech = "Overall, it seems like "
         if teams:
-            speech += f" the {choice} team is doing {adjective} lately."
+            speech += f" the {choice} team is doing {adjective} lately. "
         else:
-            speech += f" {choice} has been playing {adjective} recently."
+            speech += f" {choice} has been playing {adjective} recently. "
         
-        speech += f" Here's a quick summary: {data}"
+        if teams:
+            recent_result = get_recent_result(choice, False)
+            speech += recent_result + ' '
+        speech += f"Here's a quick summary: {data}"
         return speech

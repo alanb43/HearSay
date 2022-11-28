@@ -28,10 +28,10 @@ class ResponseGenerator:
         '''
         return response
 
-    def summarize_text(self, text_input: list[str]) -> str:
+    def summarize_text(self, text_input: List[str]) -> str:
         return self.summarizer.summarize_tweets(text_input)
 
-    def __get_relevant_tweets(self, question: str, tweets_input: list[str]) -> list[str]:
+    def __get_relevant_tweets(self, question: str, tweets_input: List[str]) -> List[str]:
         return self.relevancy_analyzer.get_most_relevant_tweets(tweets_input, question, min(10, len(tweets_input)))
 
     def __get_question_answer(self, question: str, context: str) -> str:
