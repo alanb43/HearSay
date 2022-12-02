@@ -4,6 +4,8 @@ from summarizer import Summarizer
 from sentiment_classifier import SentimentClassifier
 from typing import List
 
+import os
+
 class ResponseGenerator:
     """Generates Response using question and context given by tweets"""
 
@@ -11,7 +13,7 @@ class ResponseGenerator:
         self.relevancy_analyzer = RelevancyAnalyzer()
         self.qa_model = pipeline('question-answering', model=model_name, tokenizer=model_name)
         self.summarizer = Summarizer()
-        self.sentiment_classifier = SentimentClassifier()
+        self.sentiment_classifier = SentimentClassifier(os.environ["FINE_TUNED"])
 
     def generate_response(self, question: str, tweets: List) -> str:
         raw_tweets = [x['content'] for x in tweets]

@@ -1,17 +1,7 @@
 from serpapi import GoogleSearch
-import pprint
+import os
 
-API_KEY = "11c415ed489cd6c54fcd546fbcbad344c88e7ce4ed3a4f96b4460024da51fe23"
-params = {
-    "q": "Giants",
-    "api_key": API_KEY,
-    "hl": "en"
-}
-
-# search = GoogleSearch(params)
-# results = search.get_dict()
-# sports_results = results["sports_results"]
-# pprint.pp(sports_results)
+API_KEY = os.environ["SERP_API_KEY"] 
 
 def get_recent_result(team: str, national_team_soccer: bool):
     """Gets recent match result."""

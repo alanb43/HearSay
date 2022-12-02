@@ -7,16 +7,18 @@ from response_generation import ResponseGenerator
 from profile_manager import ProfileManager
 from data_classes.intents import Intents
 
+import os
+
 app = Flask(__name__)
 CORS(app)
 
 input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
-sentiment_analyzer = SentimentClassifier()
+sentiment_analyzer = SentimentClassifier(os.environ["FINE_TUNED"])
 response_generator = ResponseGenerator()
 profile_manager = ProfileManager(input_analyzer, sentiment_analyzer, tweet_snagger, response_generator)
 # First requestion breaks for some reason, so warming it up
-response_generator.generate_response("null", [{"content":"null"}])
+# response_generator.generate_response("null", [{"content":"null"}])
 
 def generate_response(utterance: str) -> str:
     """Integrates systems to allow an end-to-end interaction."""
@@ -38,7 +40,7 @@ def generate_response(utterance: str) -> str:
                 response = "You haven't set up a profile!"
             elif primary_intent == Intents.FAV_TEAMS:
                 response = profile_manager.get_info_about_favorites(True)
-            elif primary_intent == Intents.FAV_PLAYERS:
+            else:
                 response = profile_manager.get_info_about_favorites(False)
         # all other cases managed by response generator
         else:

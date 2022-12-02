@@ -6,8 +6,8 @@ class Intents:
     TRADE: str = "trade OR headed OR sold OR transfer"
     INJURY: str = "injury OR injured OR hurt OR benched"
     PROFILE: str = "profile OR account"
-    FAV_TEAMS: str = "favorite AND team"
-    FAV_PLAYERS: str = "favorite AND player"
+    FAV_TEAMS: str = "favorite AND (team OR teams)"
+    FAV_PLAYERS: str = "favorite AND (player OR players)"
 
 INTENTS = [
     Intents.TRADE, 

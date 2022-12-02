@@ -8,15 +8,14 @@ from entity_classifier import EntityClassifier
 from intent_classifier import IntentClassifier
 from data_classes.intents import INTENTS
 
+import os
 import numpy as np
-
-MODEL_DIR = 'entity_extraction/trained_model/'
 
 class InputAnalyzer:
     """Wrapper class for intent & entity extraction."""
 
     def __init__(self):
-        self.__entity_classifier = EntityClassifier()
+        self.__entity_classifier = EntityClassifier(os.environ["FINE_TUNED"])
         self.__intent_classifier = IntentClassifier(INTENTS)
         
     

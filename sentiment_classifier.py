@@ -2,9 +2,11 @@ from transformers import pipeline
 from data_classes.sentiment import Sentiment
 from random import randrange
 
-# Switch between the two if model doesn't work
-# MODEL_DIR = 'sentiment-analysis/finetune-sentiment-model-players-teams'
-MODEL_DIR = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+# not paying for github LFS, but this fine-tuned model is local to
+# repo owners' machines. for access to it, contact bera@umich.edu 
+FINE_TUNED = 'sentiment-analysis/finetune-sentiment-model-players-teams'
+# General model used otherwise
+GENERAL = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
 
 class SentimentClassifier:
     """
@@ -12,8 +14,9 @@ class SentimentClassifier:
     Model fine-tuned on soccer and basketball tweets for different players.
     """
 
-    def __init__(self):
-        self._analyze_pipeline = pipeline(
+    def __init__(self, fine_tuned):
+        MODEL_DIR = FINE_TUNED if bool(int(fine_tuned)) == 1 else GENERAL
+        self.__sc_pl = pipeline(
             task='sentiment-analysis',
             model=MODEL_DIR,
             tokenizer=MODEL_DIR,
@@ -21,7 +24,7 @@ class SentimentClassifier:
 
     def analyze(self, text: str):
         """Returns sentiment and confidence for given text input."""
-        analysis = self._analyze_pipeline(text)[0]
+        analysis = self.__sc_pl(text)[0]
         return {"sentiment": analysis["label"], "confidence": analysis["score"]}
 
     def batch_analysis(self, tweets: list):
