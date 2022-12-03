@@ -2,7 +2,7 @@ SpeechRecognition
 torch
 tensorflow==2.9.0
 # tensorflow_macos # if on mac
-keras==2.10.0
+keras==2.9.0
 google-cloud-speech
 # for linux / debian, install pyaudio with the following command:
 # sudo apt-get install python-pyaudio python3-pyaudio
