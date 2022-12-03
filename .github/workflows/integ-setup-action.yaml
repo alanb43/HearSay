@@ -1,7 +1,7 @@
 name: integ testing action
 on: [push]
 jobs:
-  setup-python:
+  setup-python-and-run-cypress:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,19 +15,13 @@ jobs:
           HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
           FINE_TUNED: ${{ secrets.FINE_TUNED }}
           SERP_API_KEY: ${{ secrets.SERP_API_KEY }}
-  # cypress-run:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./hearsay-client
-  #   steps:
-  #     # - name: Checkout
-  #     # - uses: actions/checkout@v2
-  #     # Install NPM dependencies, cache them correctly
-  #     # and run all Cypress tests
-  #     - name: Cypress run
-  #       uses: cypress-io/github-action@v4.2.0 # use the explicit version number
-  #       working-directory: ./hearsay-client
-  #       with:
-  #         build: npm run build
-  #         start: npm start
+      - name: Checkout
+      - uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v4.2.0 # use the explicit version number
+        working-directory: ./hearsay-client
+        with:
+          build: npm run build
+          start: npm start
