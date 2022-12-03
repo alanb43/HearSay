@@ -32,8 +32,11 @@ def generate_response(utterance: str) -> str:
             response = profile_manager.build_profile(utterance)
         # if user wants to create a profile
         elif primary_intent == Intents.PROFILE:
-            profile_manager.create_profile_state.engaged = True
-            response = "What's your name?"
+            if profile_manager.profile_exists():
+                response = "You already set up a profile!"
+            else:
+                profile_manager.create_profile_state.engaged = True
+                response = "What's your name?"
         # profiled user checking on their favorite teams or player
         elif "favorite" in utterance:
             if not profile_manager.profile_exists():

@@ -99,6 +99,7 @@ const App: React.FC = () => {
   function ChatBubble(props: ChatMessage) {
     const green = 'rgb(81, 156, 106)';
     const blue = 'rgb(60, 153, 165)';
+    const user = props.side === 'right' ? 'user' : 'HearSay';
     return (
       <div
         className="chat-bubble-container"
@@ -108,7 +109,7 @@ const App: React.FC = () => {
           alignItems: props.side === 'left' ? 'start' : 'end'
         }}
       >
-        <div className="chat-bubble" style={{ backgroundColor: props.side === 'left' ? blue : green }}>
+        <div className={`chat-bubble ${user}`} style={{ backgroundColor: props.side === 'left' ? blue : green }}>
           {
             props.text == null
               ? (

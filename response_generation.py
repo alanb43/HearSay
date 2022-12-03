@@ -25,7 +25,7 @@ class ResponseGenerator:
         response = f'''
         {summary}
         The overall sentiment is {sentiment['sentiment']}.
-        The Short answer is "{answer}".
+        The short answer is "{answer}".
         The most relevant tweet is "{most_relevant_tweet}"
         '''
         return response
