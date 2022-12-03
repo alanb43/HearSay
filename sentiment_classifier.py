@@ -2,6 +2,8 @@ from transformers import pipeline
 from data_classes.sentiment import Sentiment
 from random import randrange
 
+import os
+
 # not paying for github LFS, but this fine-tuned model is local to
 # repo owners' machines. for access to it, contact bera@umich.edu 
 FINE_TUNED = 'sentiment-analysis/finetune-sentiment-model-players-teams'
@@ -14,8 +16,8 @@ class SentimentClassifier:
     Model fine-tuned on soccer and basketball tweets for different players.
     """
 
-    def __init__(self, fine_tuned):
-        MODEL_DIR = FINE_TUNED if bool(int(fine_tuned)) == 1 else GENERAL
+    def __init__(self):
+        MODEL_DIR = FINE_TUNED if int(os.environ["FINE_TUNED"]) == 1 else GENERAL
         self.__sc_pl = pipeline(
             task='sentiment-analysis',
             model=MODEL_DIR,

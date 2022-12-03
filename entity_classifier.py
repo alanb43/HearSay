@@ -18,10 +18,10 @@ def query(utterance: str):
 
 class EntityClassifier:
     """Performs NER classification using camembert."""
-    def __init__(self, fine_tuned: bool):
+    def __init__(self):
         self.__ner = None
-        self.fine_tuned = fine_tuned
-        if fine_tuned:
+        self.fine_tuned = int(os.environ["FINE_TUNED"])
+        if self.fine_tuned == 1:
             self.__ner = pipeline(
             task='ner',
             model=MODEL_DIR,
@@ -37,4 +37,4 @@ class EntityClassifier:
             - PER: person
             - TEAM: team or organization
         """
-        return self.__ner(subject) if self.fine_tuned else query(subject)
+        return self.__ner(subject) if self.fine_tuned == 1 else query(subject)

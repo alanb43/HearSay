@@ -15,7 +15,7 @@ class InputAnalyzer:
     """Wrapper class for intent & entity extraction."""
 
     def __init__(self):
-        self.__entity_classifier = EntityClassifier(os.environ["FINE_TUNED"])
+        self.__entity_classifier = EntityClassifier()
         self.__intent_classifier = IntentClassifier(INTENTS)
         
     
