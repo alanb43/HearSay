@@ -11,6 +11,10 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - run: python3 main.py
+        env:
+          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+          FINE_TUNED: ${{ secrets.FINE_TUNED }}
+          SERP_API_KEY: ${{ secrets.SERP_API_KEY }}
   # cypress-run:
   #   runs-on: ubuntu-latest
   #   defaults:
