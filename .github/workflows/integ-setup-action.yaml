@@ -17,9 +17,9 @@ jobs:
           SERP_API_KEY: ${{ secrets.SERP_API_KEY }}
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
+      - run: cd hearsay-client
       - name: Cypress run
         uses: cypress-io/github-action@v4.2.0 # use the explicit version number
-        working-directory: ./hearsay-client
         with:
           install: npm install
           build: npm run build
