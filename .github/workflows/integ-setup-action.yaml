@@ -5,16 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9.13' 
-          cache: 'pip'
-      - run: pip install -r requirements.txt
-      - run: python3 main.py
-        env:
-          HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
-          FINE_TUNED: ${{ secrets.FINE_TUNED }}
-          SERP_API_KEY: ${{ secrets.SERP_API_KEY }}
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - run: cd hearsay-client
