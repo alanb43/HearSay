@@ -1,21 +1,29 @@
-from transformers import pipeline
 from relevancy_analyzer import RelevancyAnalyzer
 from summarizer import Summarizer
 from sentiment_classifier import SentimentClassifier
 from typing import List
 
 import os
+from utils import query
+
+API_URL = 'https://api-inference.huggingface.co/models/deepset/roberta-base-squad2'
+FINE_TUNED = int(os.environ["FINE_TUNED"])
+if FINE_TUNED:
+    from transformers import pipeline
 
 class ResponseGenerator:
     """Generates Response using question and context given by tweets"""
 
     def __init__(self, model_name = "deepset/roberta-base-squad2"):
         self.relevancy_analyzer = RelevancyAnalyzer()
-        self.qa_model = pipeline('question-answering', model=model_name, tokenizer=model_name)
+        if FINE_TUNED:
+            self.qa_model = pipeline('question-answering', model=model_name, tokenizer=model_name)
+    
         self.summarizer = Summarizer()
-        self.sentiment_classifier = SentimentClassifier(os.environ["FINE_TUNED"])
+        self.sentiment_classifier = SentimentClassifier()
 
     def generate_response(self, question: str, tweets: List) -> str:
+        print("generating response")
         raw_tweets = [x['content'] for x in tweets]
         relevant_tweets = self.__get_relevant_tweets(question, raw_tweets)
         answer = self.__get_question_answer(question, '\n'.join(relevant_tweets)).replace('\n', '')
@@ -41,7 +49,11 @@ class ResponseGenerator:
             'question': question,
             'context': context
         }
-        return self.qa_model(qa_input)['answer']
+        
+        if FINE_TUNED:
+            return self.qa_model(qa_input)['answer']
+        
+        return query(qa_input, API_URL)['answer']
 
     def __get_sentiment_analysis(self, tweets_input: List[str]):
         sentiment = self.sentiment_classifier.batch_analysis(tweets_input)

@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
-const endpoint: string = "http://127.0.0.1:5000";
+const endpoint: string = "https://hearsay.herokuapp.com";
 const textRoute: string = "/v1/text"
 
 interface ChatMessage {

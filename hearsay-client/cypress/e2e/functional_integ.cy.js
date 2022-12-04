@@ -1,51 +1,51 @@
 /// <reference types="cypress" />
 
-describe('HearSay user profile setup functional test', () => {
-  
-  it('starts back-end profile creation using conversation', () => {  
+describe('HearSay q&a functional test', () => {
+  it('tests the injured intent', () => {
     cy.visit('localhost:3000');
-    
+  
+    // testing injury intent
     cy.get('#search-bar')
-      .type('I\'d like to create a profile')
-      .should('have.value', 'I\'d like to create a profile');
-
+      .type('Are any of the LA Lakers injured?')
+      .should('have.value', 'Are any of the LA Lakers injured?');
+    
     cy.get('#submit-button')
       .click();
-
-    cy.wait(1000);
+    
+    cy.wait(8000); 
+    // response generation: sentiment
     cy.get('.HearSay')
-      .should('have.text', 'What\'s your name?');
+      .eq(0)
+      .contains('The overall sentiment is');
+  });
+  
+  it('tests the question and answering intent', () => {
+    // testing intent-less question + answering
+    cy.get('#search-bar')
+      .type('Is Lionel Messi the greatest soccer player ever?');
+    
+    cy.get('#submit-button')
+      .click();
+    
+    cy.wait(8000);
+    // response generation: short answer 
+    cy.get('.HearSay')
+      .eq(1)
+      .contains('The short answer is');
   });
 
-  it('builds out user profile', () => {
+  it('tests the trade intent', () => {
+    // testing intent-less question + answering
     cy.get('#search-bar')
-      .type('Alan');
-
-    cy.get('#submit-button')
-      .click();
-
-    cy.wait(1500);
-    cy.get('.HearSay').eq(1)
-      .should('have.text', 'Nice to meet you, Alan. Which teams do you support?');
+      .type('Should LeBron get traded to the Detroit Pistons?');
     
-    cy.get('#search-bar')
-      .type('Manchester United');
-
     cy.get('#submit-button')
       .click();
     
-    cy.wait(1500);
-    cy.get('.HearSay').eq(2)
-      .should('have.text', 'Ah, a Manchester United fan I see. Have any favorite players?');
-
-    cy.get('#search-bar')
-      .type('LeBron James');
-
-    cy.get('#submit-button')
-      .click();
-    
-    cy.wait(1500);
-    cy.get('.HearSay').eq(3)
-      .should('have.text', 'Got it. I\'ve set up your profile!');
+    cy.wait(10000);
+    // response generation: short answer 
+    cy.get('.HearSay')
+      .eq(2)
+      .contains('The most relevant tweet is');
   });
 });

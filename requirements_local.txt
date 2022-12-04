@@ -1,0 +1,10 @@
+# heavyweight requirements needed for running models locally / running fine tuned models
+tensorflow==2.9.0
+# tensorflow_macos # if on mac
+keras==2.9.0
+transformers==4.24.0
+snscrape
+pandas
+google-search-results
+flask
+flask_cors

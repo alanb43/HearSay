@@ -134,3 +134,10 @@ entity_extraction/trained_model/pytorch_model.bin
 sentiment-analysis/finetune-sentiment-model-players-teams/pytorch_model.bin
 entity_extraction/trained_model/pytorch_model.bin
 config.py
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+env2

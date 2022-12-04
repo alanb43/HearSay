@@ -6,17 +6,15 @@ To use, it's required that you:
 
 from entity_classifier import EntityClassifier
 from intent_classifier import IntentClassifier
-from data_classes.intents import INTENTS
 
-import os
 import numpy as np
 
 class InputAnalyzer:
     """Wrapper class for intent & entity extraction."""
 
     def __init__(self):
-        self.__entity_classifier = EntityClassifier(os.environ["FINE_TUNED"])
-        self.__intent_classifier = IntentClassifier(INTENTS)
+        self.__entity_classifier = EntityClassifier()
+        self.__intent_classifier = IntentClassifier()
         
     
     def analyze(self, subject: str):
