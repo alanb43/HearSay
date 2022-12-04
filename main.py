@@ -76,6 +76,4 @@ def main():
     return res
 
 if __name__ == "__main__":
-    port = 5000
-    print("Running server on port %d" % port)
-    application.run(port=port, debug=False)
+    application.run()
