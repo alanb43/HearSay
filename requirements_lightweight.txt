@@ -1,6 +1,0 @@
-requests
-snscrape
-pandas
-google-search-results
-flask
-flask_cors

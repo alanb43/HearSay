@@ -1,7 +1,5 @@
-tensorflow==2.9.0
-# tensorflow_macos # if on mac
-keras==2.9.0
-transformers==4.24.0
+# lightweight requirements needed to run HearSay using only API calls for models
+requests
 snscrape
 pandas
 google-search-results
