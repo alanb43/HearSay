@@ -7,8 +7,8 @@ from response_generation import ResponseGenerator
 from profile_manager import ProfileManager
 from data_classes.intents import Intents
 
-application = Flask(__name__)
-CORS(application)
+app = Flask(__name__)
+CORS(app)
 
 input_analyzer = InputAnalyzer()
 tweet_snagger = TweetSnagger()
@@ -67,7 +67,7 @@ def generate_response(utterance: str) -> str:
 
     return response
 
-@application.route("/v1/text", methods=["POST"])
+@app.route("/v1/text", methods=["POST"])
 def main():
     utterance = request.get_json()["query"]
     response = generate_response(utterance)
@@ -76,4 +76,4 @@ def main():
     return res
 
 if __name__ == "__main__":
-    application.run()
+    app.run()
