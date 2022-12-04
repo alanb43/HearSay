@@ -1,14 +1,16 @@
-from transformers import pipeline
 from data_classes.sentiment import Sentiment
 from random import randrange
+from utils import query, FINE_TUNED
 
-import os
+if FINE_TUNED:
+    from transformers import pipeline
 
 # not paying for github LFS, but this fine-tuned model is local to
 # repo owners' machines. for access to it, contact bera@umich.edu 
-FINE_TUNED = 'sentiment-analysis/finetune-sentiment-model-players-teams'
+FINE_TUNED_MODEL = 'sentiment-analysis/finetune-sentiment-model-players-teams'
 # General model used otherwise
-GENERAL = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+GENERAL_MODEL = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+API_URL = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-roberta-base-sentiment-latest"
 
 class SentimentClassifier:
     """
@@ -17,16 +19,23 @@ class SentimentClassifier:
     """
 
     def __init__(self):
-        MODEL_DIR = FINE_TUNED if int(os.environ["FINE_TUNED"]) == 1 else GENERAL
-        self.__sc_pl = pipeline(
-            task='sentiment-analysis',
-            model=MODEL_DIR,
-            tokenizer=MODEL_DIR,
-        )
+        if FINE_TUNED:
+            MODEL_DIR = FINE_TUNED_MODEL if FINE_TUNED else GENERAL_MODEL
+            self.__sc_pl = pipeline(
+                task='sentiment-analysis',
+                model=MODEL_DIR,
+                tokenizer=MODEL_DIR,
+            )
 
     def analyze(self, text: str):
         """Returns sentiment and confidence for given text input."""
-        analysis = self.__sc_pl(text)[0]
+        print("determining sentiment")
+        analysis = None
+        if FINE_TUNED:
+            analysis = self.__sc_pl(text)[0]
+        else:
+            analysis = query(text, API_URL)[0][0]
+        
         return {"sentiment": analysis["label"], "confidence": analysis["score"]}
 
     def batch_analysis(self, tweets: list):
@@ -35,7 +44,7 @@ class SentimentClassifier:
         Should be ran on a generally large pool of tweets, uses only high 
             confidence datapoints to draw conclusions.
         """
-
+        print("computing batch sentiment analysis")
         # this line doesn't make each object a pointer to each other
         positive_count = neutral_count = negative_count = 0
         positive_batch = [] # doing it

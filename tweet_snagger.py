@@ -1,12 +1,11 @@
 import snscrape.modules.twitter as twitter
 from intent_classifier import IntentClassifier
-from data_classes.intents import INTENTS
 
 class TweetSnagger:
     """Snags sports tweets from Twitter."""
 
     def __init__(self):
-        self.intent_classifier = IntentClassifier(INTENTS)
+        self.intent_classifier = IntentClassifier()
 
     def snag_tweets(self, topics, intent, authors = [], num_tweets = 5, replies = False, retweets = False, min_likes = 0):
         """
