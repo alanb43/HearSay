@@ -1,16 +1,15 @@
 name: integ testing action
 on: [push]
 jobs:
-  setup-python-and-run-cypress:
+  run-cypress-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
-      - run: cd hearsay-client
       - name: Cypress run
         uses: cypress-io/github-action@v4.2.0 # use the explicit version number
         with:
           install: npm install
-          build: npm run build
           start: npm start
+          working-directory: hearsay-client
