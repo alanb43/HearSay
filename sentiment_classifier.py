@@ -29,7 +29,6 @@ class SentimentClassifier:
 
     def analyze(self, text: str):
         """Returns sentiment and confidence for given text input."""
-        print("determining sentiment")
         analysis = None
         if FINE_TUNED:
             analysis = self.__sc_pl(text)[0]
@@ -73,8 +72,6 @@ class SentimentClassifier:
                                                          positive_count)
 
         best_result = max(positive_conf, neutral_conf, negative_conf)
-        if best_result < 0.50:
-            return "Sentiment could not be derived reliably"
         
         data = {"sentiment": "", "confidence": best_result}
         if best_result == positive_conf:
