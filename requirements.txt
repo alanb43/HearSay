@@ -5,3 +5,4 @@ pandas
 google-search-results
 flask
 flask_cors
+gunicorn==20.1.0
