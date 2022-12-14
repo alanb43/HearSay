@@ -1,7 +1,0 @@
-env
-__pycache__
-hearsay-client
-entity_extraction
-sentiment_analysis
-intent-clf
-env2
