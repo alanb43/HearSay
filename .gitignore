@@ -140,4 +140,9 @@ config.py
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
+#local stuff
 env2
+intent-clf
+sentiment-analysis
+entity_extraction
+twitter
